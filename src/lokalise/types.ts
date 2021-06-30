@@ -85,3 +85,31 @@ export type LokaliseKey = {
 export interface LokaliseListKeysPayload extends PaginatedResult {
   items: LokaliseKey[];
 }
+
+/**
+ * Major difference from their GET payloads is that key_name is a string and not an object.
+ * key_name corresponds to message ID / translation ID from local files.
+ * While key_id is the Lokalise database record ID for that key.
+ */
+export type LokalisePostPayload = {
+  key_id: string;
+  key_name: string;
+  description: string;
+  translations: {
+    language_iso: COLOR_LANGUAGE_ISO_CODE;
+    translation: string;
+  }[];
+  platforms: LOKALISE_DEVICE_PLATFORM[];
+  filenames: {
+    [key in LOKALISE_DEVICE_PLATFORM]: string;
+  };
+  is_archived: boolean;
+};
+
+/**
+ * Given a type like LokaliseKey that has complex attribute types like LokaliseTranslation
+ * allow defining LokaliseKey with all (nested) attributes as optional.
+ */
+export type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
+};
