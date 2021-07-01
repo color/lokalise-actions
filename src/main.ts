@@ -1,19 +1,34 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import * as core from '@actions/core';
+import { LokalisePushClient } from '@src/lokalise/push/client';
+
+enum ACTION {
+  PUSH = 'push',
+  PULL = 'pull',
+}
 
 async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+  const args = {
+    apiKey: core.getInput('api-token'),
+    projectId: core.getInput('project-id'),
+    format: core.getInput('format'),
+    platform: core.getInput('platform'),
+    languageISOCodeMapping: core.getInput('language-iso-code-mapping'),
+    sourceLanguage: core.getInput('source-language'),
+    sourceLanguageDirectory: core.getInput('source-language-directory'),
+    translationDirectory: core.getInput('translation-directory'),
+  };
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    core.setFailed(error.message)
+  switch (core.getInput('action')) {
+    case ACTION.PUSH: {
+      const pushClient = new LokalisePushClient(args);
+      await pushClient.pushKeys();
+      break;
+    }
+    default: {
+      core.error('Invalid action');
+      break;
+    }
   }
 }
 
-run()
+run();

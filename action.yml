@@ -1,11 +1,34 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Lokalise Actions'
+description: 'Creates and archives Lokalise Keys as well as pull remote files.'
+branding:
+  icon: arrow-up-circle
+  color: purple
+author: 'Color Health'
 inputs:
-  milliseconds: # change this
+  action:
+    description: Operation to perform (push, pull)
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  api-token:
+    description: API token
+    required: true
+  project-id:
+    description: The project ID
+    required: true
+  format:
+    description: The file format to parse (json, po)
+    required: true
+  platform:
+    description: The Lokalise platform to sync
+    required: true
+  language-iso-code-mapping:
+    description: Stringified JSON object mapping local language ISO codes to Lokalise ISO codes
+    required: true
+  source-language:
+    description: The locale of the source language
+  source-language-directory:
+    description: The directory to find source language files
+  translation-directory:
+    description: The directory to find translation language files
 runs:
   using: 'node12'
   main: 'dist/index.js'
