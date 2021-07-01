@@ -1,0 +1,14 @@
+{
+  "+WqNDd": {
+    "notes": "Text for button that takes user to next screen",
+    "translation": "Continuar"
+  },
+  "1nYYQQ": {
+    "notes": "Button text for keeping appointment",
+    "translation": "Cumplir la cita"
+  },
+  "2bdh5K": {
+    "notes": "Link text for downloading ics (used for iCal and Outlook)",
+    "translation": "Agregar a iCal o Outlook"
+  }
+}
