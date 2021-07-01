@@ -1,6 +1,6 @@
 ## Usages
 
-```
+```yaml
 name: Lokalise message upload
 
 on:
