@@ -1,0 +1,13 @@
+name: "Codeowners Validator"
+
+on: push
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: GitHub CODEOWNERS Validator
+        uses: mszostok/codeowners-validator@v0.6.0
+        with:
+          checks: "files,syntax,duppatterns"
