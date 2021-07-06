@@ -1,10 +1,5 @@
 name: 'build-test'
-on: # rebuild any PRs and main branch changes
-  pull_request:
-  push:
-    branches:
-      - main
-      - 'releases/*'
+on: push
 
 jobs:
   build: # make sure build/ci work properly
@@ -19,6 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./
+      - uses: color/lokalise-actions@92c05c348fd71132480a2cd47e65eb9b632e79b8
         with:
-          milliseconds: 1000
+          action: push
+          api-token: ${{ secrets.LOKALISE_API_TOKEN }}
+          project-id: 8188922760d237b197a9f2.83940041
+          language-iso-code-mapping: '{ "en": "en" }'
+          format: json
+          platform: web
+          source-language: en
+          source-language-directory: messages
