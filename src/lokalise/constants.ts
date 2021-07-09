@@ -1,0 +1,1 @@
+export const LOKALISE_LANG_ISO_PLACEHOLDER = '%LANG_ISO%';

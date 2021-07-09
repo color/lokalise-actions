@@ -11,17 +11,14 @@ async function run(): Promise<void> {
     apiKey: core.getInput('api-token'),
     projectId: core.getInput('project-id'),
     format: core.getInput('format'),
-    platform: core.getInput('platform'),
-    languageISOCodeMapping: core.getInput('language-iso-code-mapping'),
-    sourceLanguage: core.getInput('source-language'),
-    sourceLanguageDirectory: core.getInput('source-language-directory'),
     translationDirectory: core.getInput('translation-directory'),
+    replaceModified: core.getBooleanInput('replace-modified'),
   };
 
   switch (core.getInput('action')) {
     case ACTION.PUSH: {
       const pushClient = new LokalisePushClient(args);
-      await pushClient.pushKeys();
+      await pushClient.push();
       break;
     }
     default: {

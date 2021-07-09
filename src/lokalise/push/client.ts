@@ -1,91 +1,69 @@
+import { promises } from 'fs';
+import { join } from 'path';
 import * as core from '@actions/core';
-
-import { Message } from '@src/loader/loader';
 import { LokaliseClient } from '@src/lokalise/base/client';
-import { LokaliseKey, RecursivePartial, LokalisePostPayload } from '@src/lokalise/types';
+import { LOKALISE_LANG_ISO_PLACEHOLDER } from '@src/lokalise/constants';
 
 export class LokalisePushClient extends LokaliseClient {
   /**
-   * Create new translation messages and archive old ones.
+   * Syncs all local messages and translations to Lokalise by simply uploading
+   * all files in  translationDirectory. This will create new keys and update
+   * existing ones (if replaceModified is true). Does NOT delete anything.
+   *
+   * Inspired by the CrowdIn GitHub action.
    */
-  async pushKeys(): Promise<void> {
+  async push(): Promise<void> {
+    const languageISOCodes = await this.getLanguageISOCodes();
+
     try {
-      const { items: remoteKeys } = await this.getRemoteKeys();
-      const localKeys: Message[] = await this.getLocalKeys();
+      for (const code of languageISOCodes) {
+        const fileDirectory = this.getLanguageFileDirectory(this.translationDirectory, code);
+        const fileNames = await promises.readdir(fileDirectory);
 
-      const keysToCreate = this.getKeysToCreate(localKeys, remoteKeys);
-      const keysToArchive = this.getKeysToArchive(localKeys, remoteKeys);
-
-      if (keysToCreate.length > 0) {
-        core.info(`Creating ${keysToCreate.length} new keys to Lokalise`);
-
-        const { items, errors } = await this.lokaliseApi.keys.create(keysToCreate, {
-          project_id: this.projectId,
-        });
-        core.info(`Created ${items.length}`);
-        core.info(`Create errors: ${errors.length}: ${errors}`);
-      }
-
-      if (keysToArchive.length > 0) {
-        core.info(`Archiving ${keysToArchive.length} keys in Lokalise`);
-        const keyIds = keysToArchive.map(key => key.key_name);
-        core.info(keyIds.toString());
-
-        const { items, errors } = await this.lokaliseApi.keys.bulk_update(keysToArchive, {
-          project_id: this.projectId,
-        });
-        core.info(`Archived ${items.length}`);
-        core.info(`Archive errors: ${errors.length}: ${errors}`);
+        for (const fileName of fileNames) {
+          await this.uploadFile(code, fileDirectory, fileName);
+        }
       }
     } catch (error) {
-      core.error(error.message);
+      core.setFailed(error.message);
     }
   }
 
   /**
-   * Create Keys that exist locally, but not remotely.
+   * Use languages defined in Lokalise as source of truth.
    */
-  private getKeysToCreate(localKeys: Message[], remoteKeys: LokaliseKey[]): RecursivePartial<LokalisePostPayload>[] {
-    const remoteKeyIds = new Set<string>(remoteKeys.map(key => key.key_name[this.platform] as string));
-    const keysToCreate = localKeys
-      .filter(x => !remoteKeyIds.has(x.keyId))
-      .map(key => this.buildLokaliseCreateKeysRequest(key));
-    return keysToCreate;
+  async getLanguageISOCodes(): Promise<string[]> {
+    const { items } = await this.lokaliseApi.languages.list({
+      project_id: this.projectId,
+    });
+    return items.map(language => language.lang_iso);
   }
 
-  private buildLokaliseCreateKeysRequest(key: Message): RecursivePartial<LokalisePostPayload> {
-    const { keyId, translation, filename } = key;
-    return {
-      key_name: keyId,
-      translations: [
-        {
-          language_iso: this.sourceLanguage,
-          translation,
-        },
-      ],
-      platforms: [this.platform],
-      filenames: {
-        [this.platform]: filename,
-      },
-    };
+  getLanguageFileDirectory(baseDirectory: string, languageISOCode: string): string {
+    return baseDirectory.replace(LOKALISE_LANG_ISO_PLACEHOLDER, languageISOCode);
   }
 
-  /**
-   * Archive Keys that exist remotely, but not locally.
-   */
-  private getKeysToArchive(localKeys: Message[], remoteKeys: LokaliseKey[]): Partial<LokalisePostPayload>[] {
-    const localKeyIds = new Set(localKeys.map(key => key.keyId));
-    const keysToArchive = remoteKeys
-      .filter(key => !localKeyIds.has(key.key_name[this.platform] as string))
-      .map(key => this.buildLokaliseArchiveKeysRequest(key));
+  async uploadFile(languageISOCode: string, fileDirectory: string, fileName: string): Promise<void> {
+    if (!fileName.endsWith(this.format)) {
+      return;
+    }
 
-    return keysToArchive;
-  }
+    const filepath = join(fileDirectory, fileName);
+    const content = await promises.readFile(filepath, { encoding: 'base64' });
 
-  private buildLokaliseArchiveKeysRequest(key: LokaliseKey): Partial<LokalisePostPayload> {
-    return {
-      key_id: key.key_id,
-      is_archived: true,
-    };
+    // upload is async, returns a Lokalise QueuedProcess object
+    const uploadProcess = await this.lokaliseApi.files.upload(this.projectId, {
+      data: content,
+      filename: fileName,
+      lang_iso: languageISOCode,
+      tags: ['Pushed'],
+      replace_modified: this.replaceModified,
+      skip_detect_lang_iso: true,
+    });
+
+    const queuedProcess = await this.lokaliseApi.queuedProcesses.get(uploadProcess.process_id, {
+      project_id: this.projectId,
+    });
+    core.info(`Uploading ${filepath}, with status ${queuedProcess.status}`);
   }
 }
