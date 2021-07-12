@@ -1,26 +1,32 @@
 import { LokalisePushClient } from './client';
 
-const mockCreate = jest.fn().mockResolvedValue({ items: [], errors: [] });
-const mockUpdate = jest.fn().mockResolvedValue({ items: [], errors: [] });
+jest.mock('fs', () => ({
+  promises: {
+    readdir: jest.fn().mockResolvedValue(['message.test.po']),
+    readFile: jest.fn().mockResolvedValue('base64EncodedFile'),
+  },
+}));
 
-const cannedListKeysResponse = {
-  items: [
-    { key_id: 1, key_name: { web: 'GREETING' } },
-    { key_id: 2, key_name: { web: 'CLOSING' } },
-    // one that does exists only on remote, should be archived
-    { key_id: 3, key_name: { web: 'SIGNATURE' } },
-  ],
-};
+const mockProcessId = 831;
+const mockedList = jest.fn().mockResolvedValue({ items: [{ lang_iso: 'es' }] });
+const mockedUpload = jest.fn().mockResolvedValue({ process_id: mockProcessId });
+const mockedGet = jest.fn().mockResolvedValue({ status: 'queued' });
 
 jest.mock('@lokalise/node-api', () => ({
   LokaliseApi: jest.fn().mockImplementation(() => ({
-    keys: {
-      list: jest.fn().mockResolvedValue(cannedListKeysResponse),
-      create: mockCreate,
-      bulk_update: mockUpdate,
+    languages: {
+      list: mockedList,
+    },
+    files: {
+      upload: mockedUpload,
+    },
+    queuedProcesses: {
+      get: mockedGet,
     },
   })),
 }));
+
+jest.mock('@actions/core');
 
 describe('Lokalise push client', () => {
   beforeEach(() => {
@@ -31,37 +37,30 @@ describe('Lokalise push client', () => {
   const credentials = {
     apiKey: 'mock-api-key',
     projectId: 'mock-project-key',
-    languageISOCodeMapping: '{"es":"es","zh_Hant":"zh_TW"}',
-    sourceLanguage: 'en',
-    sourceLanguageDirectory: './src/lokalise/push',
     format: 'po',
-    platform: 'web',
+    translationDirectory: './src/lokalise/push',
+    replaceModified: false,
   };
 
-  it('creates new keys and archives old keys', async () => {
+  it('uploads files', async () => {
     const client = new LokalisePushClient(credentials);
-    await client.pushKeys();
+    await client.push();
 
-    expect(mockCreate).toHaveBeenCalledWith(
-      [
-        {
-          key_name: 'POSTSCRIPT',
-          platforms: ['web'],
-          filenames: { web: 'messages.test.po' },
-          translations: [{ language_iso: 'en', translation: 'P.S.' }],
-        },
-      ],
-      { project_id: credentials.projectId }
-    );
+    expect(mockedList).toHaveBeenCalledWith({
+      project_id: credentials.projectId,
+    });
 
-    expect(mockUpdate).toHaveBeenCalledWith(
-      [
-        {
-          key_id: 3,
-          is_archived: true,
-        },
-      ],
-      { project_id: credentials.projectId }
-    );
+    expect(mockedUpload).toHaveBeenCalledWith(credentials.projectId, {
+      data: 'base64EncodedFile',
+      filename: 'message.test.po',
+      lang_iso: 'es',
+      tags: ['Pushed'],
+      replace_modified: false,
+      skip_detect_lang_iso: true,
+    });
+
+    expect(mockedGet).toHaveBeenCalledWith(mockProcessId, {
+      project_id: credentials.projectId,
+    });
   });
 });

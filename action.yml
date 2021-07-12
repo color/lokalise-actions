@@ -1,5 +1,5 @@
 name: 'Lokalise Actions'
-description: 'Creates and archives Lokalise Keys as well as pull remote files.'
+description: 'Upload and download files from Lokalise'
 branding:
   icon: arrow-up-circle
   color: purple
@@ -15,20 +15,15 @@ inputs:
     description: The project ID
     required: true
   format:
-    description: The file format to parse (json, po)
+    description: The file format of the translation files
     required: true
-  platform:
-    description: The Lokalise platform to sync
-    required: true
-  language-iso-code-mapping:
-    description: Stringified JSON object mapping local language ISO codes to Lokalise ISO codes
-    required: true
-  source-language:
-    description: The locale of the source language
-  source-language-directory:
-    description: The directory to find source language files
   translation-directory:
     description: The directory to find translation language files
+    required: true
+  replace-modified:
+    description: Boolean, replace/update existing translation on upload
+    required: false
+    default: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
