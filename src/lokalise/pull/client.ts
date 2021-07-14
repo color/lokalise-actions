@@ -29,7 +29,7 @@ export class LokalisePullClient extends LokaliseClient {
         format,
         original_filenames: true,
         directory_prefix: directoryPrefix,
-        replace_breaks: false,
+        replace_breaks: true,
         include_comments: true,
         include_description: true,
         placeholder_format: PLACEHOLDER_FORMAT_BY_FILE_FORMAT[this.format],
