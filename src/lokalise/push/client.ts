@@ -56,6 +56,7 @@ export class LokalisePushClient extends LokaliseClient {
       data: content,
       filename: fileName,
       lang_iso: languageISOCode,
+      convert_placeholders: false,
       tags: ['Pushed'],
       replace_modified: this.replaceModified,
       skip_detect_lang_iso: true,

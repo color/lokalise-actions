@@ -54,6 +54,7 @@ describe('Lokalise push client', () => {
       data: 'base64EncodedFile',
       filename: 'message.test.po',
       lang_iso: 'es',
+      convert_placeholders: false,
       tags: ['Pushed'],
       replace_modified: false,
       skip_detect_lang_iso: true,
