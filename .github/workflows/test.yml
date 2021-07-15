@@ -44,6 +44,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./
+      - name: Test Push
+        uses: ./
         with:
-          milliseconds: 1000
+          action: push
+          api-token: ${{ secrets.LOKALISE_API_TOKEN }}
+          project-id: 37600957607f701d17dfc3.52981513
+          format: po
+          translation-directory: messages/%LANG_ISO%
+      - name: Test Pull
+        uses: ./
+        with:
+          action: pull
+          api-token: ${{ secrets.LOKALISE_API_TOKEN }}
+          project-id: 37600957607f701d17dfc3.52981513
+          format: po
+          translation-directory: messages/%LANG_ISO%
