@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import { LokalisePushClient } from '@src/lokalise/push/client';
+import { LokalisePullClient } from '@src/lokalise/pull/client';
 
 enum ACTION {
   PUSH = 'push',
@@ -19,6 +20,11 @@ async function run(): Promise<void> {
     case ACTION.PUSH: {
       const pushClient = new LokalisePushClient(args);
       await pushClient.push();
+      break;
+    }
+    case ACTION.PULL: {
+      const pullClient = new LokalisePullClient(args);
+      await pullClient.pull();
       break;
     }
     default: {
