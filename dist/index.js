@@ -37,7 +37,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const client_1 = __nccwpck_require__(5132);
-const client_2 = __nccwpck_require__(4951);
+const client_2 = __nccwpck_require__(1700);
 var ACTION;
 (function (ACTION) {
     ACTION["PUSH"] = "push";
@@ -30228,44 +30228,33 @@ const PLACEHOLDER_FORMAT_BY_FILE_FORMAT = {
 
 /***/ }),
 
-/***/ 4951:
+/***/ 1700:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
-// ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-
-// EXPORTS
-__nccwpck_require__.d(__webpack_exports__, {
-  "LokalisePullClient": () => (/* binding */ LokalisePullClient)
-});
-
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(5747);
-;// CONCATENATED MODULE: external "fs/promises"
-const promises_namespaceObject = require("fs/promises");;
-// EXTERNAL MODULE: external "path"
-var external_path_ = __nccwpck_require__(5622);
-;// CONCATENATED MODULE: external "stream/promises"
-const external_stream_promises_namespaceObject = require("stream/promises");;
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(2186);
-// EXTERNAL MODULE: ./node_modules/got/dist/source/index.js
-var source = __nccwpck_require__(3061);
-var source_default = /*#__PURE__*/__nccwpck_require__.n(source);
-// EXTERNAL MODULE: ./node_modules/json-stable-stringify/index.js
-var json_stable_stringify = __nccwpck_require__(6645);
-var json_stable_stringify_default = /*#__PURE__*/__nccwpck_require__.n(json_stable_stringify);
-// EXTERNAL MODULE: ./node_modules/pofile/lib/po.js
-var po = __nccwpck_require__(31);
-var po_default = /*#__PURE__*/__nccwpck_require__.n(po);
-// EXTERNAL MODULE: ./node_modules/unzipper/unzip.js
-var unzip = __nccwpck_require__(1639);
-// EXTERNAL MODULE: ./src/lokalise/base/client.ts
-var client = __nccwpck_require__(3526);
-// EXTERNAL MODULE: ./src/lokalise/constants.ts
-var constants = __nccwpck_require__(5364);
-;// CONCATENATED MODULE: ./src/lokalise/pull/client.ts
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "LokalisePullClient": () => (/* binding */ LokalisePullClient)
+/* harmony export */ });
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5747);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(5622);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(path__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(2413);
+/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(stream__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(1669);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__nccwpck_require__.n(util__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(2186);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var got__WEBPACK_IMPORTED_MODULE_10__ = __nccwpck_require__(3061);
+/* harmony import */ var got__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__nccwpck_require__.n(got__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var json_stable_stringify__WEBPACK_IMPORTED_MODULE_5__ = __nccwpck_require__(6645);
+/* harmony import */ var json_stable_stringify__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__nccwpck_require__.n(json_stable_stringify__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var pofile__WEBPACK_IMPORTED_MODULE_6__ = __nccwpck_require__(31);
+/* harmony import */ var pofile__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__nccwpck_require__.n(pofile__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var unzipper__WEBPACK_IMPORTED_MODULE_7__ = __nccwpck_require__(1639);
+/* harmony import */ var _src_lokalise_base_client__WEBPACK_IMPORTED_MODULE_8__ = __nccwpck_require__(3526);
+/* harmony import */ var _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__ = __nccwpck_require__(5364);
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -30274,13 +30263,6 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-};
-var __asyncValues = (undefined && undefined.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 
 
@@ -30294,17 +30276,17 @@ var __asyncValues = (undefined && undefined.__asyncValues) || function (o) {
 
 
 const BUNDLE_DESTINATION = './translations.zip';
-class LokalisePullClient extends client/* LokaliseClient */.$ {
+class LokalisePullClient extends _src_lokalise_base_client__WEBPACK_IMPORTED_MODULE_8__/* .LokaliseClient */ .$ {
     /**
      * Downloads a zip file of all translations for all languages for the given project.
      * The bundle is extracted and its files are post processed based on the file format.
      */
     pull() {
         return __awaiter(this, void 0, void 0, function* () {
-            const [baseDirectory, ISOCodeSubPath] = this.translationDirectory.split(constants/* LOKALISE_LANG_ISO_PLACEHOLDER */.cl);
-            const directoryPrefix = (0,external_path_.join)(constants/* LOKALISE_LANG_ISO_PLACEHOLDER */.cl, ISOCodeSubPath);
-            const format = this.format === constants/* FILE_FORMAT.JSON */.pe.JSON ? 'json_structured' : this.format;
-            const replaceBreaks = this.format === constants/* FILE_FORMAT.JSON */.pe.JSON ? false : true;
+            const [baseDirectory, ISOCodeSubPath] = this.translationDirectory.split(_src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .LOKALISE_LANG_ISO_PLACEHOLDER */ .cl);
+            const directoryPrefix = (0,path__WEBPACK_IMPORTED_MODULE_1__.join)(_src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .LOKALISE_LANG_ISO_PLACEHOLDER */ .cl, ISOCodeSubPath);
+            const format = this.format === _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .FILE_FORMAT.JSON */ .pe.JSON ? 'json_structured' : this.format;
+            const replaceBreaks = this.format === _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .FILE_FORMAT.JSON */ .pe.JSON ? false : true;
             try {
                 const { bundle_url } = yield this.lokaliseApi.files.download(this.projectId, {
                     format,
@@ -30313,50 +30295,44 @@ class LokalisePullClient extends client/* LokaliseClient */.$ {
                     replace_breaks: replaceBreaks,
                     include_comments: true,
                     include_description: true,
-                    placeholder_format: constants/* PLACEHOLDER_FORMAT_BY_FILE_FORMAT */.rO[this.format],
+                    placeholder_format: _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .PLACEHOLDER_FORMAT_BY_FILE_FORMAT */ .rO[this.format],
                     json_unescaped_slashes: true,
                 });
-                core.info('Created download bundle');
+                _actions_core__WEBPACK_IMPORTED_MODULE_4__.info('Created download bundle');
                 yield this.downloadBundle(bundle_url);
                 yield this.extractBundleToTranslationDirectory(baseDirectory);
             }
             catch (error) {
-                core.setFailed(error.message);
+                _actions_core__WEBPACK_IMPORTED_MODULE_4__.setFailed(error.message);
             }
         });
     }
     downloadBundle(bundleUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield (0,external_stream_promises_namespaceObject.pipeline)(source_default().stream(bundleUrl), (0,external_fs_.createWriteStream)(BUNDLE_DESTINATION));
+            const pipelinePromise = (0,util__WEBPACK_IMPORTED_MODULE_3__.promisify)(stream__WEBPACK_IMPORTED_MODULE_2__.pipeline);
+            yield pipelinePromise(got__WEBPACK_IMPORTED_MODULE_10___default().stream(bundleUrl), (0,fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(BUNDLE_DESTINATION));
         });
     }
     extractBundleToTranslationDirectory(baseDirectory) {
-        var e_1, _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const zip = (0,external_fs_.createReadStream)(BUNDLE_DESTINATION).pipe((0,unzip.Parse)({ forceStream: true }));
-            try {
-                for (var zip_1 = __asyncValues(zip), zip_1_1; zip_1_1 = yield zip_1.next(), !zip_1_1.done;) {
-                    const entry = zip_1_1.value;
-                    const { path, type } = entry;
-                    if (type === 'File') {
-                        const content = (yield entry.buffer()).toString('utf-8');
-                        const fullPath = (0,external_path_.join)(baseDirectory, path);
-                        yield (0,promises_namespaceObject.writeFile)(fullPath, postProcessContent(content, this.format));
-                        core.info(`Imported ${path}`);
-                    }
-                    else {
-                        entry.autodrain();
-                    }
+            // TODO: bug with using async iterators on node12, use old callback approach
+            // https://github.com/ZJONSSON/node-unzipper/issues/234
+            const zipStream = (0,fs__WEBPACK_IMPORTED_MODULE_0__.createReadStream)(BUNDLE_DESTINATION).pipe((0,unzipper__WEBPACK_IMPORTED_MODULE_7__.Parse)());
+            yield zipStream
+                .on('entry', (entry) => __awaiter(this, void 0, void 0, function* () {
+                const { path, type } = entry;
+                if (type === 'File' && path.endsWith(this.format)) {
+                    const content = (yield entry.buffer()).toString('utf-8');
+                    const fullPath = (0,path__WEBPACK_IMPORTED_MODULE_1__.join)(baseDirectory, path);
+                    yield fs__WEBPACK_IMPORTED_MODULE_0__.promises.writeFile(fullPath, postProcessContent(content, this.format));
+                    _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`Imported ${path}`);
                 }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (zip_1_1 && !zip_1_1.done && (_a = zip_1.return)) yield _a.call(zip_1);
+                else {
+                    yield entry.autodrain();
                 }
-                finally { if (e_1) throw e_1.error; }
-            }
-            yield (0,promises_namespaceObject.unlink)(BUNDLE_DESTINATION);
+            }))
+                .promise();
+            yield fs__WEBPACK_IMPORTED_MODULE_0__.promises.unlink(BUNDLE_DESTINATION);
         });
     }
 }
@@ -30369,12 +30345,12 @@ class LokalisePullClient extends client/* LokaliseClient */.$ {
  */
 function postProcessContent(content, format) {
     switch (format) {
-        case constants/* FILE_FORMAT.PO */.pe.PO:
+        case _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .FILE_FORMAT.PO */ .pe.PO:
             return formatPO(content);
-        case constants/* FILE_FORMAT.JSON */.pe.JSON:
+        case _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .FILE_FORMAT.JSON */ .pe.JSON:
             return formatStructuredJson(content);
         default:
-            core.error('Unsupported file format');
+            _actions_core__WEBPACK_IMPORTED_MODULE_4__.error('Unsupported file format');
             return '';
     }
 }
@@ -30390,7 +30366,7 @@ function postProcessContent(content, format) {
  * with the PO files generated by Django's makemessages.
  */
 function formatPO(content) {
-    const parsed = po_default().parse(content);
+    const parsed = pofile__WEBPACK_IMPORTED_MODULE_6___default().parse(content);
     // sort alphabetically by msgid
     parsed.items.sort((a, b) => (a.msgid < b.msgid ? -1 : a.msgid > b.msgid ? 1 : 0));
     if (parsed.headers['Plural-Forms'] === '') {
@@ -30417,7 +30393,7 @@ function formatStructuredJson(content) {
             delete parsed[key]['notes'];
         }
     }
-    return json_stable_stringify_default()(parsed, { space: 2 });
+    return json_stable_stringify__WEBPACK_IMPORTED_MODULE_5___default()(parsed, { space: 2 });
 }
 
 
