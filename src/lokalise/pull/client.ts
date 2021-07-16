@@ -1,7 +1,7 @@
-import { createReadStream, createWriteStream } from 'fs';
-import { writeFile, unlink } from 'fs/promises';
+import { createReadStream, createWriteStream, promises } from 'fs';
 import { join } from 'path';
-import { pipeline } from 'stream/promises';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
 
 import * as core from '@actions/core';
 import got from 'got';
@@ -46,24 +46,29 @@ export class LokalisePullClient extends LokaliseClient {
   }
 
   private async downloadBundle(bundleUrl: string): Promise<void> {
-    await pipeline(got.stream(bundleUrl), createWriteStream(BUNDLE_DESTINATION));
+    const pipelinePromise = promisify(pipeline);
+    await pipelinePromise(got.stream(bundleUrl), createWriteStream(BUNDLE_DESTINATION));
   }
 
   private async extractBundleToTranslationDirectory(baseDirectory: string): Promise<void> {
-    const zip = createReadStream(BUNDLE_DESTINATION).pipe(Parse({ forceStream: true }));
-    for await (const entry of zip) {
-      const { path, type } = entry;
-      if (type === 'File') {
-        const content = (await entry.buffer()).toString('utf-8');
-        const fullPath = join(baseDirectory, path);
-        await writeFile(fullPath, postProcessContent(content, this.format));
-        core.info(`Imported ${path}`);
-      } else {
-        entry.autodrain();
-      }
-    }
+    // TODO: bug with using async iterators on node12, use old callback approach
+    // https://github.com/ZJONSSON/node-unzipper/issues/234
+    const zipStream = createReadStream(BUNDLE_DESTINATION).pipe(Parse());
+    await zipStream
+      .on('entry', async entry => {
+        const { path, type } = entry;
+        if (type === 'File' && path.endsWith(this.format)) {
+          const content = (await entry.buffer()).toString('utf-8');
+          const fullPath = join(baseDirectory, path);
+          await promises.writeFile(fullPath, postProcessContent(content, this.format));
+          core.info(`Imported ${path}`);
+        } else {
+          await entry.autodrain();
+        }
+      })
+      .promise();
 
-    await unlink(BUNDLE_DESTINATION);
+    await promises.unlink(BUNDLE_DESTINATION);
   }
 }
 
