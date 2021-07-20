@@ -1309,6 +1309,10 @@ class ApiRequest {
             throwHttpErrors: false,
             decompress: false,
         };
+        if (lokalise_1.LokaliseApi.enableCompression && options["headers"]) {
+            options["headers"]["Accept-Encoding"] = "gzip,deflate";
+            options["decompress"] = true;
+        }
         const url = this.composeURI(uri);
         if (Object.keys(this.params).length > 0) {
             const formattedParams = new URLSearchParams();
@@ -1430,11 +1434,19 @@ class LokaliseApi extends api_methods_1.LocaliseApiMethods {
         if (LokaliseApi.apiKey == null || LokaliseApi.apiKey.length == 0) {
             throw new Error("Error: Instantiation failed: Please pass an API key");
         }
+        const compression = Object(params)["enableCompression"];
+        if (compression == null) {
+            LokaliseApi.enableCompression = false;
+        }
+        else {
+            LokaliseApi.enableCompression = compression;
+        }
         return this;
     }
 }
 exports.LokaliseApi = LokaliseApi;
 LokaliseApi.apiKey = null;
+LokaliseApi.enableCompression = false;
 //# sourceMappingURL=lokalise.js.map
 
 /***/ }),
@@ -30500,7 +30512,7 @@ class LokalisePushClient extends _src_lokalise_base_client__WEBPACK_IMPORTED_MOD
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"lokalise-actions","version":"0.0.0","private":true,"description":"Push to and pull from Lokalise","main":"lib/main.js","scripts":{"build":"tsc","format":"prettier --write **/*.ts","format-check":"prettier --check **/*.ts","lint":"eslint src/**/*.ts","package":"ncc build --source-map --license licenses.txt","test":"jest","all":"npm run build && npm run format && npm run lint && npm run package && npm test"},"repository":{"type":"git","url":"git+https://github.com/color/lokalise-actions.git"},"keywords":["actions","node","setup"],"author":"","license":"MIT","dependencies":{"@actions/core":"^1.4.0","@lokalise/node-api":"^6.2.2","got":"^11.8.2","json-stable-stringify":"^1.0.1","pofile":"^1.1.1","unzipper":"^0.10.11"},"devDependencies":{"@types/jest":"^26.0.24","@types/json-stable-stringify":"^1.0.32","@types/node":"^16.3.1","@types/unzipper":"^0.10.4","@typescript-eslint/parser":"^4.28.2","@vercel/ncc":"^0.28.6","eslint":"^7.30.0","eslint-plugin-github":"^4.1.3","eslint-plugin-jest":"^24.3.6","jest":"^26.6.3","jest-circus":"^27.0.6","js-yaml":"^4.1.0","prettier":"2.3.2","ts-jest":"^26.5.6","typescript":"^4.3.5"}}');
+module.exports = JSON.parse('{"name":"lokalise-actions","version":"0.0.0","private":true,"description":"Push to and pull from Lokalise","main":"lib/main.js","scripts":{"build":"tsc","format":"prettier --write **/*.ts","format-check":"prettier --check **/*.ts","lint":"eslint src/**/*.ts","package":"ncc build --source-map --license licenses.txt","test":"jest","all":"npm run build && npm run format && npm run lint && npm run package && npm test"},"repository":{"type":"git","url":"git+https://github.com/color/lokalise-actions.git"},"keywords":["actions","node","setup"],"author":"","license":"MIT","dependencies":{"@actions/core":"^1.4.0","@lokalise/node-api":"^6.3.0","got":"^11.8.2","json-stable-stringify":"^1.0.1","pofile":"^1.1.1","unzipper":"^0.10.11"},"devDependencies":{"@types/jest":"^26.0.24","@types/json-stable-stringify":"^1.0.32","@types/node":"^16.3.1","@types/unzipper":"^0.10.4","@typescript-eslint/parser":"^4.28.2","@vercel/ncc":"^0.28.6","eslint":"^7.30.0","eslint-plugin-github":"^4.1.3","eslint-plugin-jest":"^24.3.6","jest":"^26.6.3","jest-circus":"^27.0.6","js-yaml":"^4.1.0","prettier":"2.3.2","ts-jest":"^26.5.6","typescript":"^4.3.5"}}');
 
 /***/ }),
 
