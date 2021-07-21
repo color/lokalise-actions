@@ -30512,7 +30512,7 @@ class LokalisePushClient extends _src_lokalise_base_client__WEBPACK_IMPORTED_MOD
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"lokalise-actions","version":"0.0.0","private":true,"description":"Push to and pull from Lokalise","main":"lib/main.js","scripts":{"build":"tsc","format":"prettier --write **/*.ts","format-check":"prettier --check **/*.ts","lint":"eslint src/**/*.ts","package":"ncc build --source-map --license licenses.txt","test":"jest","all":"npm run build && npm run format && npm run lint && npm run package && npm test"},"repository":{"type":"git","url":"git+https://github.com/color/lokalise-actions.git"},"keywords":["actions","node","setup"],"author":"","license":"MIT","dependencies":{"@actions/core":"^1.4.0","@lokalise/node-api":"^6.3.0","got":"^11.8.2","json-stable-stringify":"^1.0.1","pofile":"^1.1.1","unzipper":"^0.10.11"},"devDependencies":{"@types/jest":"^26.0.24","@types/json-stable-stringify":"^1.0.33","@types/node":"^16.3.3","@types/unzipper":"^0.10.4","@typescript-eslint/parser":"^4.28.4","@vercel/ncc":"^0.28.6","eslint":"^7.31.0","eslint-plugin-github":"^4.1.3","eslint-plugin-jest":"^24.3.6","jest":"^26.6.3","jest-circus":"^27.0.6","js-yaml":"^4.1.0","prettier":"2.3.2","ts-jest":"^26.5.6","typescript":"^4.3.5"}}');
+module.exports = JSON.parse('{"name":"lokalise-actions","version":"0.0.0","private":true,"description":"Push to and pull from Lokalise","main":"lib/main.js","scripts":{"build":"tsc","format":"prettier --write **/*.ts","format-check":"prettier --check **/*.ts","lint":"eslint src/**/*.ts","package":"ncc build --source-map --license licenses.txt","test":"jest","all":"npm run build && npm run format && npm run lint && npm run package && npm test"},"repository":{"type":"git","url":"git+https://github.com/color/lokalise-actions.git"},"keywords":["actions","node","setup"],"author":"","license":"MIT","dependencies":{"@actions/core":"^1.4.0","@lokalise/node-api":"^6.3.0","got":"^11.8.2","json-stable-stringify":"^1.0.1","pofile":"^1.1.1","unzipper":"^0.10.11"},"devDependencies":{"@types/jest":"^26.0.24","@types/json-stable-stringify":"^1.0.33","@types/node":"^16.4.0","@types/unzipper":"^0.10.4","@typescript-eslint/parser":"^4.28.4","@vercel/ncc":"^0.29.0","eslint":"^7.31.0","eslint-plugin-github":"^4.1.3","eslint-plugin-jest":"^24.3.7","jest":"^26.6.3","jest-circus":"^27.0.6","js-yaml":"^4.1.0","prettier":"2.3.2","ts-jest":"^26.5.6","typescript":"^4.3.5"}}');
 
 /***/ }),
 
@@ -30520,7 +30520,7 @@ module.exports = JSON.parse('{"name":"lokalise-actions","version":"0.0.0","priva
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("assert");;
+module.exports = require("assert");
 
 /***/ }),
 
@@ -30528,7 +30528,7 @@ module.exports = require("assert");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("buffer");;
+module.exports = require("buffer");
 
 /***/ }),
 
@@ -30536,7 +30536,7 @@ module.exports = require("buffer");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("constants");;
+module.exports = require("constants");
 
 /***/ }),
 
@@ -30544,7 +30544,7 @@ module.exports = require("constants");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("dns");;
+module.exports = require("dns");
 
 /***/ }),
 
@@ -30552,7 +30552,7 @@ module.exports = require("dns");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("events");;
+module.exports = require("events");
 
 /***/ }),
 
@@ -30560,7 +30560,7 @@ module.exports = require("events");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("fs");;
+module.exports = require("fs");
 
 /***/ }),
 
@@ -30568,7 +30568,7 @@ module.exports = require("fs");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("http");;
+module.exports = require("http");
 
 /***/ }),
 
@@ -30576,7 +30576,7 @@ module.exports = require("http");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("http2");;
+module.exports = require("http2");
 
 /***/ }),
 
@@ -30584,7 +30584,7 @@ module.exports = require("http2");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("https");;
+module.exports = require("https");
 
 /***/ }),
 
@@ -30592,7 +30592,7 @@ module.exports = require("https");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("net");;
+module.exports = require("net");
 
 /***/ }),
 
@@ -30600,7 +30600,7 @@ module.exports = require("net");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("os");;
+module.exports = require("os");
 
 /***/ }),
 
@@ -30608,7 +30608,7 @@ module.exports = require("os");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("path");;
+module.exports = require("path");
 
 /***/ }),
 
@@ -30616,7 +30616,7 @@ module.exports = require("path");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("stream");;
+module.exports = require("stream");
 
 /***/ }),
 
@@ -30624,7 +30624,7 @@ module.exports = require("stream");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("tls");;
+module.exports = require("tls");
 
 /***/ }),
 
@@ -30632,7 +30632,7 @@ module.exports = require("tls");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("url");;
+module.exports = require("url");
 
 /***/ }),
 
@@ -30640,7 +30640,7 @@ module.exports = require("url");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("util");;
+module.exports = require("util");
 
 /***/ }),
 
@@ -30648,7 +30648,7 @@ module.exports = require("util");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("zlib");;
+module.exports = require("zlib");
 
 /***/ })
 
@@ -30739,7 +30739,9 @@ module.exports = require("zlib");;
 /******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
-/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";/************************************************************************/
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
+/******/ 	
+/************************************************************************/
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
