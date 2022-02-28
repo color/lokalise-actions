@@ -33,7 +33,7 @@
     "unzipper": "^0.10.11"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.24",
+    "@types/jest": "^27.4.1",
     "@types/json-stable-stringify": "^1.0.33",
     "@types/node": "^16.6.1",
     "@types/unzipper": "^0.10.4",
