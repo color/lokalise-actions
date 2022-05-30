@@ -27,7 +27,7 @@
   "dependencies": {
     "@actions/core": "^1.4.0",
     "@lokalise/node-api": "^6.3.0",
-    "got": "^11.8.2",
+    "got": "^12.1.0",
     "json-stable-stringify": "^1.0.1",
     "pofile": "^1.1.1",
     "unzipper": "^0.10.11"
