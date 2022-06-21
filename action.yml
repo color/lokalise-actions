@@ -24,6 +24,14 @@ inputs:
     description: Boolean, replace/update existing translation on upload
     required: false
     default: false
+  apply-tm:
+    description: Boolean, apply 100% translation memory matches
+    required: false
+    default: false
+  cleanup-mode:
+    description: Boolean, delete all keys with all language translations that are not present in the uploaded file
+    required: false
+    default: false
 runs:
   using: 'node12'
   main: 'dist/index.js'

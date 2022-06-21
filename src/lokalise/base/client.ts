@@ -11,6 +11,8 @@ export class LokaliseClient {
   format: string;
   translationDirectory: string;
   replaceModified: boolean;
+  applyTm: boolean;
+  cleanupMode: boolean;
 
   constructor(args: Record<string, string | boolean>) {
     Object.assign(this, args);

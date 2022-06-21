@@ -59,6 +59,8 @@ export class LokalisePushClient extends LokaliseClient {
       convert_placeholders: false,
       tags: ['Pushed'],
       replace_modified: this.replaceModified,
+      apply_tm: this.applyTm,
+      cleanup_mode: this.cleanupMode,
       skip_detect_lang_iso: true,
     });
 
