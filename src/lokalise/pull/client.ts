@@ -23,11 +23,10 @@ export class LokalisePullClient extends LokaliseClient {
     const [baseDirectory, ISOCodeSubPath] = this.translationDirectory.split(LOKALISE_LANG_ISO_PLACEHOLDER);
     const directoryPrefix = join(LOKALISE_LANG_ISO_PLACEHOLDER, ISOCodeSubPath);
 
-    const format = this.format === FILE_FORMAT.JSON ? 'json_structured' : this.format;
-    const replaceBreaks = this.format === FILE_FORMAT.JSON ? false : true;
+    const replaceBreaks = this.format === FILE_FORMAT.PO ? true : false;
     try {
       const { bundle_url } = await this.lokaliseApi.files.download(this.projectId, {
-        format,
+        format: this.format,
         original_filenames: true,
         directory_prefix: directoryPrefix,
         replace_breaks: replaceBreaks,
