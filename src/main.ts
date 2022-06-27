@@ -14,6 +14,8 @@ async function run(): Promise<void> {
     format: core.getInput('format'),
     translationDirectory: core.getInput('translation-directory'),
     replaceModified: core.getBooleanInput('replace-modified'),
+    applyTm: core.getBooleanInput('apply-tm'),
+    cleanupMode: core.getBooleanInput('cleanup-mode'),
   };
 
   switch (core.getInput('action')) {
