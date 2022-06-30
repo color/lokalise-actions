@@ -47,26 +47,37 @@ export class LokalisePushClient extends LokaliseClient {
     if (!fileName.endsWith(this.format)) {
       return;
     }
-
     const filepath = join(fileDirectory, fileName);
-    const content = await promises.readFile(filepath, { encoding: 'base64' });
 
-    // upload is async, returns a Lokalise QueuedProcess object
-    const uploadProcess = await this.lokaliseApi.files.upload(this.projectId, {
-      data: content,
-      filename: fileName,
-      lang_iso: languageISOCode,
-      convert_placeholders: false,
-      tags: ['Pushed'],
-      replace_modified: this.replaceModified,
-      apply_tm: this.applyTm,
-      cleanup_mode: this.cleanupMode,
-      skip_detect_lang_iso: true,
-    });
+    try {
+      // In Node 12, there is no convention for checking if a file exists before reading it.
+      // Instead, attempt to read the file and catch any errors
+      // https://nodejs.org/docs/latest-v12.x/api/fs.html#fs_fspromises_access_path_mode
+      const content = await promises.readFile(filepath, { encoding: 'base64' });
 
-    const queuedProcess = await this.lokaliseApi.queuedProcesses.get(uploadProcess.process_id, {
-      project_id: this.projectId,
-    });
-    core.info(`Uploading ${filepath}, with status ${queuedProcess.status}`);
+      // upload is async, returns a Lokalise QueuedProcess object
+      const uploadProcess = await this.lokaliseApi.files.upload(this.projectId, {
+        data: content,
+        filename: fileName,
+        lang_iso: languageISOCode,
+        convert_placeholders: false,
+        tags: ['Pushed'],
+        replace_modified: this.replaceModified,
+        apply_tm: this.applyTm,
+        cleanup_mode: this.cleanupMode,
+        skip_detect_lang_iso: true,
+      });
+
+      const queuedProcess = await this.lokaliseApi.queuedProcesses.get(uploadProcess.process_id, {
+        project_id: this.projectId,
+      });
+      core.info(`Uploading ${filepath}, with status ${queuedProcess.status}`);
+    } catch (error) {
+      // error should be type guarded, but TS complained about the NodeJS.ErrnoException type
+      if (error?.code === 'ENOENT') {
+        core.info(`File ${filepath}, not found`);
+      }
+      return;
+    }
   }
 }
