@@ -1,31 +1,52 @@
-import { promises } from 'fs';
-import { join } from 'path';
 import * as core from '@actions/core';
+import {
+  FILE_EXTENSION_BY_FILE_FORMAT,
+  LOKALISE_ENGLISH_LANGUAGE_CODE,
+  LOKALISE_LANG_ISO_PLACEHOLDER,
+} from '@src/lokalise/constants';
 import { LokaliseClient } from '@src/lokalise/base/client';
-import { LOKALISE_LANG_ISO_PLACEHOLDER } from '@src/lokalise/constants';
+import { join } from 'path';
+import { promises } from 'fs';
 
 export class LokalisePushClient extends LokaliseClient {
   /**
-   * Syncs all local messages and translations to Lokalise by simply uploading
-   * all files in  translationDirectory. This will create new keys and update
-   * existing ones (if replaceModified is true). Does NOT delete anything.
+   * Syncs all codebase messages and translations to Lokalise by simply uploading
+   * all files in `translationDirectory` for each language. This will create new
+   * keys. It will also update existing ones if `replaceModified` is true.
    *
    * Inspired by the CrowdIn GitHub action.
    */
   async push(): Promise<void> {
-    const languageISOCodes = await this.getLanguageISOCodes();
-
     try {
-      for (const code of languageISOCodes) {
-        const fileDirectory = this.getLanguageFileDirectory(this.translationDirectory, code);
-        const fileNames = await promises.readdir(fileDirectory);
-
-        for (const fileName of fileNames) {
-          await this.uploadFile(code, fileDirectory, fileName);
-        }
+      if (this.translationDirectory.includes(LOKALISE_LANG_ISO_PLACEHOLDER)) {
+        await this.pushAllLanguages();
+      } else {
+        await this.pushBaseLanguage();
       }
     } catch (error) {
-      core.setFailed(error.message);
+      if (error instanceof Error) {
+        core.setFailed(`Failed pushing messages: ${error.message}`);
+      }
+    }
+  }
+
+  async pushAllLanguages(): Promise<void> {
+    const languageISOCodes = await this.getLanguageISOCodes();
+    for (const code of languageISOCodes) {
+      const fileDirectory = this.getLanguageFileDirectory(this.translationDirectory, code);
+      const fileNames = await promises.readdir(fileDirectory);
+
+      for (const fileName of fileNames) {
+        await this.uploadFile(code, fileDirectory, fileName);
+      }
+    }
+  }
+
+  async pushBaseLanguage(): Promise<void> {
+    const fileNames = await promises.readdir(this.translationDirectory);
+
+    for (const fileName of fileNames) {
+      await this.uploadFile(LOKALISE_ENGLISH_LANGUAGE_CODE, this.translationDirectory, fileName);
     }
   }
 
@@ -44,7 +65,7 @@ export class LokalisePushClient extends LokaliseClient {
   }
 
   async uploadFile(languageISOCode: string, fileDirectory: string, fileName: string): Promise<void> {
-    if (!fileName.endsWith(this.format)) {
+    if (!fileName.endsWith(FILE_EXTENSION_BY_FILE_FORMAT[this.format])) {
       return;
     }
     const filepath = join(fileDirectory, fileName);

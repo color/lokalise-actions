@@ -1,8 +1,9 @@
+import { FILE_FORMAT } from '../constants';
 import { LokalisePushClient } from './client';
 
 jest.mock('fs', () => ({
   promises: {
-    readdir: jest.fn().mockResolvedValue(['message.test.po']),
+    readdir: jest.fn().mockResolvedValue(['message.test.po', 'message.test.json']),
     readFile: jest.fn().mockResolvedValue('base64EncodedFile'),
   },
 }));
@@ -28,21 +29,27 @@ jest.mock('@lokalise/node-api', () => ({
 
 jest.mock('@actions/core');
 
+const mockAllLanguagesDirectory = './src/lokalise/push/%LANG_ISO%';
+const mockEnglishLanguageDirectory = './src/lokalise/push';
+
+function getMockCredentials(format: string, translationDirectory: string): Record<string, string | boolean> {
+  return {
+    apiKey: 'mock-api-key',
+    projectId: 'mock-project-key',
+    format,
+    translationDirectory,
+    replaceModified: false,
+  };
+}
+
 describe('Lokalise push client', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  // for jest purposes, base directory is root
-  const credentials = {
-    apiKey: 'mock-api-key',
-    projectId: 'mock-project-key',
-    format: 'po',
-    translationDirectory: './src/lokalise/push',
-    replaceModified: false,
-  };
+  it('pushes all languages', async () => {
+    const credentials = getMockCredentials(FILE_FORMAT.PO, mockAllLanguagesDirectory);
 
-  it('uploads files', async () => {
     const client = new LokalisePushClient(credentials);
     await client.push();
 
@@ -62,6 +69,46 @@ describe('Lokalise push client', () => {
 
     expect(mockedGet).toHaveBeenCalledWith(mockProcessId, {
       project_id: credentials.projectId,
+    });
+  });
+
+  it('pushes only base language', async () => {
+    const credentials = getMockCredentials(FILE_FORMAT.JSON, mockEnglishLanguageDirectory);
+
+    const client = new LokalisePushClient(credentials);
+    await client.push();
+
+    expect(mockedList).not.toHaveBeenCalled();
+
+    expect(mockedUpload).toHaveBeenCalledWith(credentials.projectId, {
+      data: 'base64EncodedFile',
+      filename: 'message.test.json',
+      lang_iso: 'en',
+      convert_placeholders: false,
+      tags: ['Pushed'],
+      replace_modified: false,
+      skip_detect_lang_iso: true,
+    });
+
+    expect(mockedGet).toHaveBeenCalledWith(mockProcessId, {
+      project_id: credentials.projectId,
+    });
+  });
+
+  it('pushes structured json', async () => {
+    const credentials = getMockCredentials(FILE_FORMAT.JSON_STRUCTURED, mockEnglishLanguageDirectory);
+
+    const client = new LokalisePushClient(credentials);
+    await client.push();
+
+    expect(mockedUpload).toHaveBeenCalledWith(credentials.projectId, {
+      data: 'base64EncodedFile',
+      filename: 'message.test.json',
+      lang_iso: 'en',
+      convert_placeholders: false,
+      tags: ['Pushed'],
+      replace_modified: false,
+      skip_detect_lang_iso: true,
     });
   });
 });
