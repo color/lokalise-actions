@@ -51,7 +51,7 @@ jobs:
           api-token: ${{ secrets.LOKALISE_API_TOKEN }}
           project-id: ${{ secrets.LOKALISE_TEST_PROJECT_PO }}
           format: po
-          translation-directory: messages/%LANG_ISO%
+          translation-directory: src/mock-messages/po/%LANG_ISO%
       - name: Test Pull
         uses: ./
         with:
@@ -59,4 +59,4 @@ jobs:
           api-token: ${{ secrets.LOKALISE_API_TOKEN }}
           project-id: ${{ secrets.LOKALISE_TEST_PROJECT_PO }}
           format: po
-          translation-directory: messages/%LANG_ISO%
+          translation-directory: src/mock-messages/po/%LANG_ISO%
