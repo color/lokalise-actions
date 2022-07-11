@@ -37,7 +37,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const client_1 = __nccwpck_require__(5132);
-const client_2 = __nccwpck_require__(1700);
+const client_2 = __nccwpck_require__(6609);
 var ACTION;
 (function (ACTION) {
     ACTION["PUSH"] = "push";
@@ -51,6 +51,8 @@ function run() {
             format: core.getInput('format'),
             translationDirectory: core.getInput('translation-directory'),
             replaceModified: core.getBooleanInput('replace-modified'),
+            applyTm: core.getBooleanInput('apply-tm'),
+            cleanupMode: core.getBooleanInput('cleanup-mode'),
         };
         switch (core.getInput('action')) {
             case ACTION.PUSH: {
@@ -30222,150 +30224,61 @@ class LokaliseClient {
 
 "use strict";
 /* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "ci": () => (/* binding */ LOKALISE_ENGLISH_LANGUAGE_CODE),
 /* harmony export */   "cl": () => (/* binding */ LOKALISE_LANG_ISO_PLACEHOLDER),
 /* harmony export */   "pe": () => (/* binding */ FILE_FORMAT),
+/* harmony export */   "SG": () => (/* binding */ FILE_EXTENSION_BY_FILE_FORMAT),
 /* harmony export */   "rO": () => (/* binding */ PLACEHOLDER_FORMAT_BY_FILE_FORMAT)
 /* harmony export */ });
+const LOKALISE_ENGLISH_LANGUAGE_CODE = 'en';
 const LOKALISE_LANG_ISO_PLACEHOLDER = '%LANG_ISO%';
 var FILE_FORMAT;
 (function (FILE_FORMAT) {
     FILE_FORMAT["PO"] = "po";
     FILE_FORMAT["JSON"] = "json";
+    FILE_FORMAT["JSON_STRUCTURED"] = "json_structured";
 })(FILE_FORMAT || (FILE_FORMAT = {}));
+const FILE_EXTENSION_BY_FILE_FORMAT = {
+    [FILE_FORMAT.PO]: 'po',
+    [FILE_FORMAT.JSON]: 'json',
+    [FILE_FORMAT.JSON_STRUCTURED]: 'json',
+};
 const PLACEHOLDER_FORMAT_BY_FILE_FORMAT = {
     [FILE_FORMAT.PO]: 'printf',
     [FILE_FORMAT.JSON]: 'icu',
+    [FILE_FORMAT.JSON_STRUCTURED]: 'icu',
 };
 
 
 /***/ }),
 
-/***/ 1700:
+/***/ 6609:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
+// ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   "LokalisePullClient": () => (/* binding */ LokalisePullClient)
-/* harmony export */ });
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5747);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(5622);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(path__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(2413);
-/* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(stream__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(1669);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__nccwpck_require__.n(util__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var got__WEBPACK_IMPORTED_MODULE_10__ = __nccwpck_require__(3061);
-/* harmony import */ var got__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__nccwpck_require__.n(got__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var json_stable_stringify__WEBPACK_IMPORTED_MODULE_5__ = __nccwpck_require__(6645);
-/* harmony import */ var json_stable_stringify__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__nccwpck_require__.n(json_stable_stringify__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var pofile__WEBPACK_IMPORTED_MODULE_6__ = __nccwpck_require__(31);
-/* harmony import */ var pofile__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__nccwpck_require__.n(pofile__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var unzipper__WEBPACK_IMPORTED_MODULE_7__ = __nccwpck_require__(1639);
-/* harmony import */ var _src_lokalise_base_client__WEBPACK_IMPORTED_MODULE_8__ = __nccwpck_require__(3526);
-/* harmony import */ var _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__ = __nccwpck_require__(5364);
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
+
+// EXPORTS
+__nccwpck_require__.d(__webpack_exports__, {
+  "LokalisePullClient": () => (/* binding */ LokalisePullClient)
+});
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: ./src/lokalise/constants.ts
+var constants = __nccwpck_require__(5364);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(5747);
+// EXTERNAL MODULE: ./node_modules/pofile/lib/po.js
+var po = __nccwpck_require__(31);
+var po_default = /*#__PURE__*/__nccwpck_require__.n(po);
+// EXTERNAL MODULE: ./node_modules/json-stable-stringify/index.js
+var json_stable_stringify = __nccwpck_require__(6645);
+var json_stable_stringify_default = /*#__PURE__*/__nccwpck_require__.n(json_stable_stringify);
+;// CONCATENATED MODULE: ./src/lokalise/format-utilities.ts
 
 
-
-
-
-
-
-
-
-
-
-const BUNDLE_DESTINATION = './translations.zip';
-class LokalisePullClient extends _src_lokalise_base_client__WEBPACK_IMPORTED_MODULE_8__/* .LokaliseClient */ .$ {
-    /**
-     * Downloads a zip file of all translations for all languages for the given project.
-     * The bundle is extracted and its files are post processed based on the file format.
-     */
-    pull() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const [baseDirectory, ISOCodeSubPath] = this.translationDirectory.split(_src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .LOKALISE_LANG_ISO_PLACEHOLDER */ .cl);
-            const directoryPrefix = (0,path__WEBPACK_IMPORTED_MODULE_1__.join)(_src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .LOKALISE_LANG_ISO_PLACEHOLDER */ .cl, ISOCodeSubPath);
-            const format = this.format === _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .FILE_FORMAT.JSON */ .pe.JSON ? 'json_structured' : this.format;
-            const replaceBreaks = this.format === _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .FILE_FORMAT.JSON */ .pe.JSON ? false : true;
-            try {
-                const { bundle_url } = yield this.lokaliseApi.files.download(this.projectId, {
-                    format,
-                    original_filenames: true,
-                    directory_prefix: directoryPrefix,
-                    replace_breaks: replaceBreaks,
-                    include_comments: true,
-                    include_description: true,
-                    placeholder_format: _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .PLACEHOLDER_FORMAT_BY_FILE_FORMAT */ .rO[this.format],
-                    json_unescaped_slashes: true,
-                });
-                _actions_core__WEBPACK_IMPORTED_MODULE_4__.info('Created download bundle');
-                yield this.downloadBundle(bundle_url);
-                yield this.extractBundleToTranslationDirectory(baseDirectory);
-            }
-            catch (error) {
-                _actions_core__WEBPACK_IMPORTED_MODULE_4__.setFailed(error.message);
-            }
-        });
-    }
-    downloadBundle(bundleUrl) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const pipelinePromise = (0,util__WEBPACK_IMPORTED_MODULE_3__.promisify)(stream__WEBPACK_IMPORTED_MODULE_2__.pipeline);
-            yield pipelinePromise(got__WEBPACK_IMPORTED_MODULE_10___default().stream(bundleUrl), (0,fs__WEBPACK_IMPORTED_MODULE_0__.createWriteStream)(BUNDLE_DESTINATION));
-        });
-    }
-    extractBundleToTranslationDirectory(baseDirectory) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // TODO: bug with using async iterators on node12, use old callback approach
-            // https://github.com/ZJONSSON/node-unzipper/issues/234
-            const zipStream = (0,fs__WEBPACK_IMPORTED_MODULE_0__.createReadStream)(BUNDLE_DESTINATION).pipe((0,unzipper__WEBPACK_IMPORTED_MODULE_7__.Parse)());
-            yield zipStream
-                .on('entry', (entry) => __awaiter(this, void 0, void 0, function* () {
-                const { path, type } = entry;
-                if (type === 'File' && path.endsWith(this.format)) {
-                    const content = (yield entry.buffer()).toString('utf-8');
-                    const fullPath = (0,path__WEBPACK_IMPORTED_MODULE_1__.join)(baseDirectory, path);
-                    yield fs__WEBPACK_IMPORTED_MODULE_0__.promises.writeFile(fullPath, postProcessContent(content, this.format));
-                    _actions_core__WEBPACK_IMPORTED_MODULE_4__.info(`Imported ${path}`);
-                }
-                else {
-                    yield entry.autodrain();
-                }
-            }))
-                .promise();
-            yield fs__WEBPACK_IMPORTED_MODULE_0__.promises.unlink(BUNDLE_DESTINATION);
-        });
-    }
-}
-/**
- * Lokalise's exported files are not 1:1 with the imports will cause lots of noise in git diffs.
- * - PO file export is limited by what they parse: https://docs.lokalise.com/en/articles/1400767-gettext-po-pot
- * - Structured JSON has spacing and sorting issues.
- *
- * To minimize the resulting diff, post process the downloaded translations files.
- */
-function postProcessContent(content, format) {
-    switch (format) {
-        case _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .FILE_FORMAT.PO */ .pe.PO:
-            return formatPO(content);
-        case _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_9__/* .FILE_FORMAT.JSON */ .pe.JSON:
-            return formatStructuredJson(content);
-        default:
-            _actions_core__WEBPACK_IMPORTED_MODULE_4__.error('Unsupported file format');
-            return '';
-    }
-}
 /**
  * Lokalise has limitations to their PO file support that we must workaround:
  *
@@ -30378,7 +30291,7 @@ function postProcessContent(content, format) {
  * with the PO files generated by Django's makemessages.
  */
 function formatPO(content) {
-    const parsed = pofile__WEBPACK_IMPORTED_MODULE_6___default().parse(content);
+    const parsed = po_default().parse(content);
     // sort alphabetically by msgid
     parsed.items.sort((a, b) => (a.msgid < b.msgid ? -1 : a.msgid > b.msgid ? 1 : 0));
     if (parsed.headers['Plural-Forms'] === '') {
@@ -30405,28 +30318,27 @@ function formatStructuredJson(content) {
             delete parsed[key]['notes'];
         }
     }
-    return json_stable_stringify__WEBPACK_IMPORTED_MODULE_5___default()(parsed, { space: 2 });
+    return json_stable_stringify_default()(parsed, { space: 2 });
+}
+function formatJson(content) {
+    const parsed = JSON.parse(content);
+    return json_stable_stringify_default()(parsed, { space: 2 });
 }
 
-
-/***/ }),
-
-/***/ 5132:
-/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
-
-"use strict";
-__nccwpck_require__.r(__webpack_exports__);
-/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   "LokalisePushClient": () => (/* binding */ LokalisePushClient)
-/* harmony export */ });
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5747);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(5622);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(path__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _src_lokalise_base_client__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(3526);
-/* harmony import */ var _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(5364);
+// EXTERNAL MODULE: ./src/lokalise/base/client.ts
+var client = __nccwpck_require__(3526);
+// EXTERNAL MODULE: ./node_modules/unzipper/unzip.js
+var unzip = __nccwpck_require__(1639);
+// EXTERNAL MODULE: ./node_modules/got/dist/source/index.js
+var source = __nccwpck_require__(3061);
+var source_default = /*#__PURE__*/__nccwpck_require__.n(source);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(5622);
+// EXTERNAL MODULE: external "stream"
+var external_stream_ = __nccwpck_require__(2413);
+// EXTERNAL MODULE: external "util"
+var external_util_ = __nccwpck_require__(1669);
+;// CONCATENATED MODULE: ./src/lokalise/pull/client.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -30441,28 +30353,210 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
-class LokalisePushClient extends _src_lokalise_base_client__WEBPACK_IMPORTED_MODULE_3__/* .LokaliseClient */ .$ {
+
+
+
+
+
+const BUNDLE_DESTINATION = './translations.zip';
+class LokalisePullClient extends client/* LokaliseClient */.$ {
     /**
-     * Syncs all local messages and translations to Lokalise by simply uploading
-     * all files in  translationDirectory. This will create new keys and update
-     * existing ones (if replaceModified is true). Does NOT delete anything.
+     * Downloads a zip file of all translations for all languages for the given project.
+     * The bundle is extracted and its files are post processed based on the file format.
+     */
+    pull() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const fileFormat = this.format;
+            // the presence of the placeholder indicates a nested export, otherwise flat export
+            const { downloadOptions, downloadDirectory } = this.translationDirectory.includes(constants/* LOKALISE_LANG_ISO_PLACEHOLDER */.cl)
+                ? this.getNestedExportParams(this.translationDirectory, fileFormat)
+                : this.getFlatExportParams(this.translationDirectory, fileFormat);
+            try {
+                const { bundle_url } = yield this.lokaliseApi.files.download(this.projectId, downloadOptions);
+                core.info(`Created download bundle, ${bundle_url}`);
+                yield this.downloadBundle(bundle_url);
+                core.info('Bundle downloaded');
+                yield this.extractBundleToDownloadDirectory(downloadDirectory, fileFormat);
+            }
+            catch (error) {
+                core.setFailed(error.message);
+            }
+        });
+    }
+    /**
+     * A "flat" export from Lokalise has all translations files in the root of the export.
+     * It will name each file based on the language code in the Lokalise project.
+     *
+     * For example:
+     *  export.zip
+     *  - en.json
+     *  - es.json
+     */
+    getFlatExportParams(translationDirectory, format) {
+        const flatExportDownloadOptions = Object.assign(Object.assign({}, this.getBaseDownloadOptions(format)), { original_filenames: false, bundle_structure: '%LANG_ISO%.json' });
+        return {
+            downloadOptions: flatExportDownloadOptions,
+            downloadDirectory: translationDirectory,
+        };
+    }
+    /**
+     * A "nested" export from Lokalise has all translations nested in folders named by language code.
+     * The nested structure is used when the translations are further organized by different filenames.
+     *
+     * For example:
+     *  export.zip
+     *    en/
+     *      common.json
+     *      lib.json
+     *    es/
+     *      common.json
+     *      lib.json
+     */
+    getNestedExportParams(translationDirectory, format) {
+        const [downloadDirectory, ISOCodeSubPath] = translationDirectory.split(constants/* LOKALISE_LANG_ISO_PLACEHOLDER */.cl);
+        const directoryPrefix = (0,external_path_.join)(constants/* LOKALISE_LANG_ISO_PLACEHOLDER */.cl, ISOCodeSubPath);
+        const nestedExportDownloadOptions = Object.assign(Object.assign({}, this.getBaseDownloadOptions(format)), { original_filenames: true, directory_prefix: directoryPrefix, include_comments: true, include_description: true });
+        return {
+            downloadOptions: nestedExportDownloadOptions,
+            downloadDirectory,
+        };
+    }
+    getBaseDownloadOptions(format) {
+        return {
+            format,
+            add_newline_eof: true,
+            replace_breaks: format === constants/* FILE_FORMAT.PO */.pe.PO ? true : false,
+            placeholder_format: constants/* PLACEHOLDER_FORMAT_BY_FILE_FORMAT */.rO[format],
+            json_unescaped_slashes: true,
+        };
+    }
+    downloadBundle(bundleUrl) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const pipelinePromise = (0,external_util_.promisify)(external_stream_.pipeline);
+            yield pipelinePromise(source_default().stream(bundleUrl), (0,external_fs_.createWriteStream)(BUNDLE_DESTINATION));
+        });
+    }
+    extractBundleToDownloadDirectory(baseDirectory, format) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // TODO: bug with using async iterators on node12, use old callback approach
+            // https://github.com/ZJONSSON/node-unzipper/issues/234
+            const zipStream = (0,external_fs_.createReadStream)(BUNDLE_DESTINATION).pipe((0,unzip.Parse)());
+            const fileExtension = constants/* FILE_EXTENSION_BY_FILE_FORMAT */.SG[format];
+            yield zipStream
+                .on('entry', (entry) => __awaiter(this, void 0, void 0, function* () {
+                const { path, type } = entry;
+                if (type === 'File' && path.endsWith(fileExtension)) {
+                    const content = (yield entry.buffer()).toString('utf-8');
+                    const fullPath = (0,external_path_.join)(baseDirectory, path);
+                    yield external_fs_.promises.writeFile(fullPath, postProcessContent(content, format));
+                    core.info(`Imported ${path}`);
+                }
+                else {
+                    core.info(`Entry did not match expected file extension, skipping ${path}`);
+                    yield entry.autodrain();
+                }
+            }))
+                .promise();
+            yield external_fs_.promises.unlink(BUNDLE_DESTINATION);
+        });
+    }
+}
+/**
+ * Lokalise's exported files are not 1:1 with the imports will cause lots of noise in git diffs.
+ * - PO file export is limited by what they parse: https://docs.lokalise.com/en/articles/1400767-gettext-po-pot
+ * - Structured JSON has spacing and sorting issues.
+ *
+ * To minimize the resulting diff, post process the downloaded translations files.
+ */
+function postProcessContent(content, format) {
+    switch (format) {
+        case constants/* FILE_FORMAT.PO */.pe.PO:
+            return formatPO(content);
+        case constants/* FILE_FORMAT.JSON_STRUCTURED */.pe.JSON_STRUCTURED:
+            return formatStructuredJson(content);
+        case constants/* FILE_FORMAT.JSON */.pe.JSON:
+            return formatJson(content);
+        default:
+            core.error(`Unsupported file format, ${format}`);
+            return '';
+    }
+}
+
+
+/***/ }),
+
+/***/ 5132:
+/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "LokalisePushClient": () => (/* binding */ LokalisePushClient)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _src_lokalise_constants__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(5364);
+/* harmony import */ var _src_lokalise_base_client__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(3526);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(5622);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__nccwpck_require__.n(path__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(5747);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_4__);
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+
+
+class LokalisePushClient extends _src_lokalise_base_client__WEBPACK_IMPORTED_MODULE_2__/* .LokaliseClient */ .$ {
+    /**
+     * Syncs all codebase messages and translations to Lokalise by simply uploading
+     * all files in `translationDirectory` for each language. This will create new
+     * keys. It will also update existing ones if `replaceModified` is true.
      *
      * Inspired by the CrowdIn GitHub action.
      */
     push() {
         return __awaiter(this, void 0, void 0, function* () {
-            const languageISOCodes = yield this.getLanguageISOCodes();
             try {
-                for (const code of languageISOCodes) {
-                    const fileDirectory = this.getLanguageFileDirectory(this.translationDirectory, code);
-                    const fileNames = yield fs__WEBPACK_IMPORTED_MODULE_0__.promises.readdir(fileDirectory);
-                    for (const fileName of fileNames) {
-                        yield this.uploadFile(code, fileDirectory, fileName);
-                    }
+                if (this.translationDirectory.includes(_src_lokalise_constants__WEBPACK_IMPORTED_MODULE_1__/* .LOKALISE_LANG_ISO_PLACEHOLDER */ .cl)) {
+                    yield this.pushAllLanguages();
+                }
+                else {
+                    yield this.pushBaseLanguage();
                 }
             }
             catch (error) {
-                _actions_core__WEBPACK_IMPORTED_MODULE_2__.setFailed(error.message);
+                if (error instanceof Error) {
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(`Failed pushing messages: ${error.message}`);
+                }
+            }
+        });
+    }
+    pushAllLanguages() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const languageISOCodes = yield this.getLanguageISOCodes();
+            for (const code of languageISOCodes) {
+                const fileDirectory = this.getLanguageFileDirectory(this.translationDirectory, code);
+                const fileNames = yield fs__WEBPACK_IMPORTED_MODULE_4__.promises.readdir(fileDirectory);
+                for (const fileName of fileNames) {
+                    yield this.uploadFile(code, fileDirectory, fileName);
+                }
+            }
+        });
+    }
+    pushBaseLanguage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const fileNames = yield fs__WEBPACK_IMPORTED_MODULE_4__.promises.readdir(this.translationDirectory);
+            for (const fileName of fileNames) {
+                yield this.uploadFile(_src_lokalise_constants__WEBPACK_IMPORTED_MODULE_1__/* .LOKALISE_ENGLISH_LANGUAGE_CODE */ .ci, this.translationDirectory, fileName);
             }
         });
     }
@@ -30478,29 +30572,43 @@ class LokalisePushClient extends _src_lokalise_base_client__WEBPACK_IMPORTED_MOD
         });
     }
     getLanguageFileDirectory(baseDirectory, languageISOCode) {
-        return baseDirectory.replace(_src_lokalise_constants__WEBPACK_IMPORTED_MODULE_4__/* .LOKALISE_LANG_ISO_PLACEHOLDER */ .cl, languageISOCode);
+        return baseDirectory.replace(_src_lokalise_constants__WEBPACK_IMPORTED_MODULE_1__/* .LOKALISE_LANG_ISO_PLACEHOLDER */ .cl, languageISOCode);
     }
     uploadFile(languageISOCode, fileDirectory, fileName) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!fileName.endsWith(this.format)) {
+            if (!fileName.endsWith(_src_lokalise_constants__WEBPACK_IMPORTED_MODULE_1__/* .FILE_EXTENSION_BY_FILE_FORMAT */ .SG[this.format])) {
                 return;
             }
-            const filepath = (0,path__WEBPACK_IMPORTED_MODULE_1__.join)(fileDirectory, fileName);
-            const content = yield fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(filepath, { encoding: 'base64' });
-            // upload is async, returns a Lokalise QueuedProcess object
-            const uploadProcess = yield this.lokaliseApi.files.upload(this.projectId, {
-                data: content,
-                filename: fileName,
-                lang_iso: languageISOCode,
-                convert_placeholders: false,
-                tags: ['Pushed'],
-                replace_modified: this.replaceModified,
-                skip_detect_lang_iso: true,
-            });
-            const queuedProcess = yield this.lokaliseApi.queuedProcesses.get(uploadProcess.process_id, {
-                project_id: this.projectId,
-            });
-            _actions_core__WEBPACK_IMPORTED_MODULE_2__.info(`Uploading ${filepath}, with status ${queuedProcess.status}`);
+            const filepath = (0,path__WEBPACK_IMPORTED_MODULE_3__.join)(fileDirectory, fileName);
+            try {
+                // In Node 12, there is no convention for checking if a file exists before reading it.
+                // Instead, attempt to read the file and catch any errors
+                // https://nodejs.org/docs/latest-v12.x/api/fs.html#fs_fspromises_access_path_mode
+                const content = yield fs__WEBPACK_IMPORTED_MODULE_4__.promises.readFile(filepath, { encoding: 'base64' });
+                // upload is async, returns a Lokalise QueuedProcess object
+                const uploadProcess = yield this.lokaliseApi.files.upload(this.projectId, {
+                    data: content,
+                    filename: fileName,
+                    lang_iso: languageISOCode,
+                    convert_placeholders: false,
+                    tags: ['Pushed'],
+                    replace_modified: this.replaceModified,
+                    apply_tm: this.applyTm,
+                    cleanup_mode: this.cleanupMode,
+                    skip_detect_lang_iso: true,
+                });
+                const queuedProcess = yield this.lokaliseApi.queuedProcesses.get(uploadProcess.process_id, {
+                    project_id: this.projectId,
+                });
+                _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Uploading ${filepath}, with status ${queuedProcess.status}`);
+            }
+            catch (error) {
+                // error should be type guarded, but TS complained about the NodeJS.ErrnoException type
+                if ((error === null || error === void 0 ? void 0 : error.code) === 'ENOENT') {
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`File ${filepath}, not found`);
+                }
+                return;
+            }
         });
     }
 }
@@ -30512,7 +30620,7 @@ class LokalisePushClient extends _src_lokalise_base_client__WEBPACK_IMPORTED_MOD
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"lokalise-actions","version":"0.0.0","private":true,"description":"Push to and pull from Lokalise","main":"lib/main.js","scripts":{"build":"tsc","format":"prettier --write **/*.ts","format-check":"prettier --check **/*.ts","lint":"eslint src/**/*.ts","package":"ncc build --source-map --license licenses.txt","test":"jest","all":"npm run build && npm run format && npm run lint && npm run package && npm test"},"repository":{"type":"git","url":"git+https://github.com/color/lokalise-actions.git"},"keywords":["actions","node","setup"],"author":"","license":"MIT","dependencies":{"@actions/core":"^1.4.0","@lokalise/node-api":"^6.3.0","got":"^11.8.2","json-stable-stringify":"^1.0.1","pofile":"^1.1.1","unzipper":"^0.10.11"},"devDependencies":{"@types/jest":"^26.0.24","@types/json-stable-stringify":"^1.0.33","@types/node":"^16.4.10","@types/unzipper":"^0.10.4","@typescript-eslint/parser":"^4.29.0","@vercel/ncc":"^0.29.0","eslint":"^7.32.0","eslint-plugin-github":"^4.1.5","eslint-plugin-jest":"^24.4.0","jest":"^26.6.3","jest-circus":"^27.0.6","js-yaml":"^4.1.0","prettier":"2.3.2","ts-jest":"^26.5.6","typescript":"^4.3.5"}}');
+module.exports = JSON.parse('{"name":"lokalise-actions","version":"0.0.0","private":true,"description":"Push to and pull from Lokalise","main":"lib/main.js","scripts":{"build":"tsc","format":"prettier --write **/*.ts","format-check":"prettier --check **/*.ts","lint":"eslint src/**/*.ts","package":"ncc build --source-map --license licenses.txt","test":"jest","all":"npm run build && npm run format && npm run lint && npm run package && npm test"},"repository":{"type":"git","url":"git+https://github.com/color/lokalise-actions.git"},"keywords":["actions","node","setup"],"author":"","license":"MIT","dependencies":{"@actions/core":"^1.4.0","@lokalise/node-api":"^6.3.0","got":"^11.8.2","json-stable-stringify":"^1.0.1","pofile":"^1.1.1","unzipper":"^0.10.11"},"devDependencies":{"@types/jest":"^26.0.24","@types/json-stable-stringify":"^1.0.33","@types/node":"^16.6.1","@types/unzipper":"^0.10.4","@typescript-eslint/parser":"^4.29.1","@vercel/ncc":"^0.29.0","eslint":"^7.32.0","eslint-plugin-github":"^4.2.0","eslint-plugin-jest":"^24.4.0","jest":"^26.6.3","jest-circus":"^27.0.6","js-yaml":"^4.1.0","prettier":"2.3.2","ts-jest":"^26.5.6","typescript":"^4.3.5"}}');
 
 /***/ }),
 
