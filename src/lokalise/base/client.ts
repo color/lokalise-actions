@@ -1,3 +1,4 @@
+import { FILE_FORMAT } from '@src/lokalise/constants';
 import { LokaliseApi } from '@lokalise/node-api';
 
 /**
@@ -8,7 +9,7 @@ export class LokaliseClient {
   lokaliseApi: LokaliseApi;
   apiKey: string;
   projectId: string;
-  format: string;
+  format: FILE_FORMAT;
   translationDirectory: string;
   replaceModified: boolean;
   applyTm: boolean;
