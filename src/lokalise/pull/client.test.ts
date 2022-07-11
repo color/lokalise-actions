@@ -50,6 +50,7 @@ describe('Lokalise pull client', () => {
       format: 'po',
       original_filenames: true,
       directory_prefix: '%LANG_ISO%/suffix',
+      add_newline_eof: true,
       replace_breaks: true,
       include_comments: true,
       include_description: true,
@@ -65,6 +66,9 @@ describe('Lokalise pull client', () => {
     expect(readStreamSpy).toHaveBeenCalledWith('./translations.zip');
     // extracted files are parsed and written
     expect(writeFileSpy).toHaveBeenCalledTimes(3);
+    expect(writeFileSpy).toHaveBeenNthCalledWith(1, 'po-prefix/en/django.po', expect.anything());
+    expect(writeFileSpy).toHaveBeenNthCalledWith(2, 'po-prefix/es/django.po', expect.anything());
+    expect(writeFileSpy).toHaveBeenNthCalledWith(3, 'po-prefix/zh_Hans/django.po', expect.anything());
   });
 
   test('pull structured json', async () => {
@@ -87,6 +91,7 @@ describe('Lokalise pull client', () => {
       format: 'json_structured',
       original_filenames: true,
       directory_prefix: '%LANG_ISO%/suffix',
+      add_newline_eof: true,
       replace_breaks: false,
       include_comments: true,
       include_description: true,
@@ -96,6 +101,11 @@ describe('Lokalise pull client', () => {
 
     // there are three files in mock-messages/structured-json.zip
     expect(writeFileSpy).toHaveBeenCalledTimes(3);
+    // INFO: suffix is absent from these because that set in the /mock-messages
+    // what should be tested is that the suffix is provided in the Lokalise parameters (done above)
+    expect(writeFileSpy).toHaveBeenNthCalledWith(1, 'structured-json-prefix/en.json', expect.anything());
+    expect(writeFileSpy).toHaveBeenNthCalledWith(2, 'structured-json-prefix/es.json', expect.anything());
+    expect(writeFileSpy).toHaveBeenNthCalledWith(3, 'structured-json-prefix/zh_Hans.json', expect.anything());
   });
 
   test('pull json', async () => {
@@ -105,8 +115,7 @@ describe('Lokalise pull client', () => {
       apiKey: 'mock-api-key',
       projectId: 'mock-project-key',
       format: 'json',
-      translationDirectory: './prefix/%LANG_ISO%/suffix',
-      replaceModified: false,
+      translationDirectory: './flat-json-directory',
     };
 
     const client = new LokalisePullClient(credentials);
@@ -114,16 +123,17 @@ describe('Lokalise pull client', () => {
 
     expect(mockedDownload).toHaveBeenCalledWith(credentials.projectId, {
       format: 'json',
-      original_filenames: true,
-      directory_prefix: '%LANG_ISO%/suffix',
-      replace_breaks: false,
-      include_comments: true,
-      include_description: true,
+      original_filenames: false,
+      bundle_structure: '%LANG_ISO%.json',
+      add_newline_eof: true,
       placeholder_format: 'icu',
       json_unescaped_slashes: true,
+      replace_breaks: false,
     });
 
     // there are two files in mock-messages/json.zip
     expect(writeFileSpy).toHaveBeenCalledTimes(2);
+    expect(writeFileSpy).toHaveBeenNthCalledWith(1, 'flat-json-directory/es.json', expect.anything());
+    expect(writeFileSpy).toHaveBeenNthCalledWith(2, 'flat-json-directory/zh_Hans.json', expect.anything());
   });
 });
