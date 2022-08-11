@@ -103,6 +103,7 @@ export class LokalisePullClient extends LokaliseClient {
     return {
       format,
       add_newline_eof: true,
+      export_empty_as: 'base',
       replace_breaks: format === FILE_FORMAT.PO ? true : false,
       placeholder_format: PLACEHOLDER_FORMAT_BY_FILE_FORMAT[format],
       json_unescaped_slashes: true,

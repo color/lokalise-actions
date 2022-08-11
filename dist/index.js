@@ -30425,6 +30425,7 @@ class LokalisePullClient extends client/* LokaliseClient */.$ {
         return {
             format,
             add_newline_eof: true,
+            export_empty_as: 'base',
             replace_breaks: format === constants/* FILE_FORMAT.PO */.pe.PO ? true : false,
             placeholder_format: constants/* PLACEHOLDER_FORMAT_BY_FILE_FORMAT */.rO[format],
             json_unescaped_slashes: true,
