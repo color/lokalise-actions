@@ -49,6 +49,7 @@ describe('Lokalise pull client', () => {
     expect(mockedDownload).toHaveBeenCalledWith(credentials.projectId, {
       format: 'po',
       original_filenames: true,
+      export_empty_as: 'base',
       directory_prefix: '%LANG_ISO%/suffix',
       add_newline_eof: true,
       replace_breaks: true,
@@ -90,6 +91,7 @@ describe('Lokalise pull client', () => {
     expect(mockedDownload).toHaveBeenCalledWith(credentials.projectId, {
       format: 'json_structured',
       original_filenames: true,
+      export_empty_as: 'base',
       directory_prefix: '%LANG_ISO%/suffix',
       add_newline_eof: true,
       replace_breaks: false,
@@ -124,6 +126,7 @@ describe('Lokalise pull client', () => {
     expect(mockedDownload).toHaveBeenCalledWith(credentials.projectId, {
       format: 'json',
       original_filenames: false,
+      export_empty_as: 'base',
       bundle_structure: '%LANG_ISO%.json',
       add_newline_eof: true,
       placeholder_format: 'icu',
