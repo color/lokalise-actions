@@ -6,7 +6,7 @@ import {
 } from '@src/lokalise/constants';
 import { LokaliseClient } from '@src/lokalise/base/client';
 import { join } from 'path';
-import { promises } from 'fs';
+import { readFile, readdir } from 'fs/promises';
 
 export class LokalisePushClient extends LokaliseClient {
   /**
@@ -34,7 +34,7 @@ export class LokalisePushClient extends LokaliseClient {
     const languageISOCodes = await this.getLanguageISOCodes();
     for (const code of languageISOCodes) {
       const fileDirectory = this.getLanguageFileDirectory(this.translationDirectory, code);
-      const fileNames = await promises.readdir(fileDirectory);
+      const fileNames = await readdir(fileDirectory);
 
       for (const fileName of fileNames) {
         await this.uploadFile(code, fileDirectory, fileName);
@@ -43,7 +43,7 @@ export class LokalisePushClient extends LokaliseClient {
   }
 
   async pushBaseLanguage(): Promise<void> {
-    const fileNames = await promises.readdir(this.translationDirectory);
+    const fileNames = await readdir(this.translationDirectory);
 
     for (const fileName of fileNames) {
       await this.uploadFile(LOKALISE_ENGLISH_LANGUAGE_CODE, this.translationDirectory, fileName);
@@ -71,10 +71,7 @@ export class LokalisePushClient extends LokaliseClient {
     const filepath = join(fileDirectory, fileName);
 
     try {
-      // In Node 12, there is no convention for checking if a file exists before reading it.
-      // Instead, attempt to read the file and catch any errors
-      // https://nodejs.org/docs/latest-v12.x/api/fs.html#fs_fspromises_access_path_mode
-      const content = await promises.readFile(filepath, { encoding: 'base64' });
+      const content = await readFile(filepath, { encoding: 'base64' });
 
       // upload is async, returns a Lokalise QueuedProcess object
       const uploadProcess = await this.lokaliseApi.files.upload(this.projectId, {
@@ -94,8 +91,7 @@ export class LokalisePushClient extends LokaliseClient {
       });
       core.info(`Uploading ${filepath}, with status ${queuedProcess.status}`);
     } catch (error) {
-      // error should be type guarded, but TS complained about the NodeJS.ErrnoException type
-      if (error?.code === 'ENOENT') {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         core.info(`File ${filepath}, not found`);
       }
       return;

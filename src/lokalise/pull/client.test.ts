@@ -1,11 +1,14 @@
-import fs, { createReadStream, promises } from 'fs';
+import fs, { createReadStream } from 'fs';
+import promises from 'fs/promises';
 import { LokalisePullClient } from './client';
 import got from 'got';
-import stream from 'stream';
 
-const bundleUrl = 'https://foo.url';
+const BUNDLE_URL = 'https://foo.url';
+const PO_READ_STREAM = createReadStream('./src/mock-messages/po.zip');
+const STRUCTURED_JSON_READ_STREAM = createReadStream('./src/mock-messages/structured-json.zip');
+const JSON_READ_STREAM = createReadStream('./src/mock-messages/json.zip');
 
-const mockedDownload = jest.fn().mockResolvedValue({ bundle_url: bundleUrl });
+const mockedDownload = jest.fn().mockResolvedValue({ bundle_url: BUNDLE_URL });
 jest.mock('@lokalise/node-api', () => ({
   LokaliseApi: jest.fn().mockImplementation(() => ({
     files: {
@@ -13,7 +16,9 @@ jest.mock('@lokalise/node-api', () => ({
     },
   })),
 }));
+
 jest.mock('@actions/core');
+jest.mock('stream/promises');
 
 describe('Lokalise pull client', () => {
   beforeEach(() => {
@@ -21,17 +26,14 @@ describe('Lokalise pull client', () => {
   });
 
   // arrange: selectively mock out to avoid mocking imports that are required by other dependencies
-  const pipelineSpy = jest.spyOn(stream, 'pipeline');
-  (pipelineSpy as jest.Mock).mockImplementation((a, b, callback) => callback(null, true));
   const gotStreamSpy = jest.spyOn(got, 'stream').mockImplementation();
-  const writeStreamSpy = jest.spyOn(fs, 'createWriteStream').mockImplementation();
+  const writeStreamSpy = jest.spyOn(fs, 'createWriteStream')
   const writeFileSpy = jest.spyOn(promises, 'writeFile').mockImplementation(async () => Promise.resolve());
-  jest.spyOn(promises, 'unlink').mockImplementation(async () => Promise.resolve());
 
   test('pull po', async () => {
     const readStreamSpy = jest
       .spyOn(fs, 'createReadStream')
-      .mockReturnValueOnce(createReadStream('./src/mock-messages/po.zip'));
+      .mockReturnValueOnce(PO_READ_STREAM);
 
     const credentials = {
       apiKey: 'mock-api-key',
@@ -60,7 +62,7 @@ describe('Lokalise pull client', () => {
     });
 
     // bundle is downloaded
-    expect(gotStreamSpy).toHaveBeenCalledWith(bundleUrl);
+    expect(gotStreamSpy).toHaveBeenCalledWith(BUNDLE_URL);
     // bundle is written
     expect(writeStreamSpy).toHaveBeenCalledWith('./translations.zip');
     // bundle is extracted
@@ -73,7 +75,7 @@ describe('Lokalise pull client', () => {
   });
 
   test('pull structured json', async () => {
-    jest.spyOn(fs, 'createReadStream').mockReturnValueOnce(createReadStream('./src/mock-messages/structured-json.zip'));
+    jest.spyOn(fs, 'createReadStream').mockReturnValueOnce(STRUCTURED_JSON_READ_STREAM);
 
     const credentials = {
       apiKey: 'mock-api-key',
@@ -111,7 +113,7 @@ describe('Lokalise pull client', () => {
   });
 
   test('pull json', async () => {
-    jest.spyOn(fs, 'createReadStream').mockReturnValueOnce(createReadStream('./src/mock-messages/json.zip'));
+    jest.spyOn(fs, 'createReadStream').mockReturnValueOnce(JSON_READ_STREAM);
 
     const credentials = {
       apiKey: 'mock-api-key',
