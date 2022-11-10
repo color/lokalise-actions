@@ -6,8 +6,9 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: GitHub CODEOWNERS Validator
         uses: mszostok/codeowners-validator@v0.6.0
         with:
+          node-version: 16
           checks: "files,syntax,duppatterns"
