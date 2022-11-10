@@ -15,6 +15,5 @@ jobs:
       - uses: marocchino/sticky-pull-request-comment@v2.1.0
         if: always()
         with:
-          node-version: 16
           header: validate-dependabot
           message: ${{ steps.validate.outputs.markdown }}
