@@ -1,11 +1,9 @@
 import { FILE_FORMAT } from '../constants';
 import { LokalisePushClient } from './client';
 
-jest.mock('fs', () => ({
-  promises: {
-    readdir: jest.fn().mockResolvedValue(['message.test.po', 'message.test.json']),
-    readFile: jest.fn().mockResolvedValue('base64EncodedFile'),
-  },
+jest.mock('fs/promises', () => ({
+  readdir: jest.fn().mockResolvedValue(['message.test.po', 'message.test.json']),
+  readFile: jest.fn().mockResolvedValue('base64EncodedFile'),
 }));
 
 const mockProcessId = 831;

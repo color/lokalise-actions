@@ -26,7 +26,7 @@ jobs:
   upload:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: color/lokalise-action@v1
         with:
           # operation to perform (push, pull)

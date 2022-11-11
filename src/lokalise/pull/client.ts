@@ -5,15 +5,15 @@ import {
   LOKALISE_LANG_ISO_PLACEHOLDER,
   PLACEHOLDER_FORMAT_BY_FILE_FORMAT,
 } from '@src/lokalise/constants';
-import { createReadStream, createWriteStream, promises } from 'fs';
+import { createReadStream, createWriteStream } from 'fs';
+import { unlink, writeFile } from 'fs/promises';
 import { formatJson, formatPO, formatStructuredJson } from '@src/lokalise/format-utilities';
 import { DownloadFileParams } from '@lokalise/node-api';
 import { LokaliseClient } from '@src/lokalise/base/client';
 import { Parse } from 'unzipper';
 import got from 'got';
 import { join } from 'path';
-import { pipeline } from 'stream';
-import { promisify } from 'util';
+import { pipeline } from 'stream/promises';
 
 const BUNDLE_DESTINATION = './translations.zip';
 
@@ -42,7 +42,7 @@ export class LokalisePullClient extends LokaliseClient {
       core.info('Bundle downloaded');
       await this.extractBundleToDownloadDirectory(downloadDirectory, fileFormat);
     } catch (error) {
-      core.setFailed(error.message);
+      core.setFailed((error as Error).message);
     }
   }
 
@@ -111,32 +111,27 @@ export class LokalisePullClient extends LokaliseClient {
   }
 
   private async downloadBundle(bundleUrl: string): Promise<void> {
-    const pipelinePromise = promisify(pipeline);
-    await pipelinePromise(got.stream(bundleUrl), createWriteStream(BUNDLE_DESTINATION));
+    await pipeline(got.stream(bundleUrl), createWriteStream(BUNDLE_DESTINATION));
   }
 
   private async extractBundleToDownloadDirectory(baseDirectory: string, format: FILE_FORMAT): Promise<void> {
-    // TODO: bug with using async iterators on node12, use old callback approach
-    // https://github.com/ZJONSSON/node-unzipper/issues/234
-    const zipStream = createReadStream(BUNDLE_DESTINATION).pipe(Parse());
+    const zip = createReadStream(BUNDLE_DESTINATION).pipe(Parse({ forceStream: true }));
     const fileExtension = FILE_EXTENSION_BY_FILE_FORMAT[format];
 
-    await zipStream
-      .on('entry', async entry => {
-        const { path, type } = entry;
-        if (type === 'File' && path.endsWith(fileExtension)) {
-          const content = (await entry.buffer()).toString('utf-8');
-          const fullPath = join(baseDirectory, path);
-          await promises.writeFile(fullPath, postProcessContent(content, format));
-          core.info(`Imported ${path}`);
-        } else {
-          core.info(`Entry did not match expected file extension, skipping ${path}`);
-          await entry.autodrain();
-        }
-      })
-      .promise();
+    for await (const entry of zip) {
+      const { path, type } = entry;
+      if (type === 'File' && path.endsWith(fileExtension)) {
+        const content = (await entry.buffer()).toString('utf-8');
+        const fullPath = join(baseDirectory, path);
+        await writeFile(fullPath, postProcessContent(content, this.format));
+        core.info(`Imported ${path}`);
+      } else {
+        core.info(`Entry did not match expected file extension, skipping ${path}`);
+        entry.autodrain();
+      }
+    }
 
-    await promises.unlink(BUNDLE_DESTINATION);
+    await unlink(BUNDLE_DESTINATION);
   }
 }
 
