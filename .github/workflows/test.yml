@@ -16,7 +16,7 @@ jobs:
         id: version
         run: |
           node_version="$(cat .tool-versions | grep "nodejs" | awk '{printf $2}')"
-          echo "::set-output name=version::${node_version}"
+          echo "version=${node_version}" >> $GITHUB_OUTPUT
 
       - name: Install a consistent version of node
         uses: actions/setup-node@v3
