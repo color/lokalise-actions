@@ -37,7 +37,7 @@ export function formatPO(content: string): string {
  * json-stable-stringify provides consistent key sorting and formatting
  */
 export function formatStructuredJson(content: string): string {
-  const parsed = JSON.parse(content);
+  const parsed = JSON.parse(content) as Record<string, { translation: string; notes?: string }>;
   for (const key in parsed) {
     const description = parsed[key]['notes'];
     if (description === '') {
@@ -48,6 +48,6 @@ export function formatStructuredJson(content: string): string {
 }
 
 export function formatJson(content: string): string {
-  const parsed = JSON.parse(content);
+  const parsed = JSON.parse(content) as Record<string, string>;
   return stringify(parsed, { space: 2 });
 }

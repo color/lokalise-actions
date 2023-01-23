@@ -1,11 +1,11 @@
-import { FILE_FORMAT } from '@src/lokalise/constants';
 import { LokaliseApi } from '@lokalise/node-api';
+import { FILE_FORMAT } from './constants';
 
 /**
  * Base wrapper around the Lokalise Node API.
  * https://lokalise.github.io/node-lokalise-api/
  */
-export class LokaliseClient {
+export interface LokaliseClient {
   lokaliseApi: LokaliseApi;
   apiKey: string;
   projectId: string;
@@ -14,9 +14,4 @@ export class LokaliseClient {
   replaceModified: boolean;
   applyTm: boolean;
   cleanupMode: boolean;
-
-  constructor(args: Record<string, string | boolean>) {
-    Object.assign(this, args);
-    this.lokaliseApi = new LokaliseApi({ apiKey: args.apiKey });
-  }
 }

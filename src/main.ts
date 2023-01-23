@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
-import { LokalisePushClient } from '@src/lokalise/push/client';
-import { LokalisePullClient } from '@src/lokalise/pull/client';
+import { LokalisePushClient } from '~src/lokalise/push/client';
+import { LokalisePullClient } from '~src/lokalise/pull/client';
 
 enum ACTION {
   PUSH = 'push',
