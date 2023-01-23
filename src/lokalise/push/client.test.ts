@@ -1,27 +1,36 @@
+import { QueuedProcess, PaginatedResult, Language } from '@lokalise/node-api';
+import { describe, expect, jest, test } from '@jest/globals';
+import { readFile } from 'fs/promises';
+
 import { FILE_FORMAT } from '../constants';
 import { LokalisePushClient } from './client';
 
 jest.mock('fs/promises', () => ({
-  readdir: jest.fn().mockResolvedValue(['message.test.po', 'message.test.json']),
-  readFile: jest.fn().mockResolvedValue('base64EncodedFile'),
+  // readdir is an overloaded function and there isn't a way to inform jest which function signature to mock
+  readdir: jest.fn<() => Promise<string[]>>().mockResolvedValue(['message.test.po', 'message.test.json']),
+  readFile: jest.fn<typeof readFile>().mockResolvedValue('base64EncodedFile'),
 }));
 
-const mockProcessId = 831;
-const mockedList = jest.fn().mockResolvedValue({ items: [{ lang_iso: 'es' }] });
-const mockedUpload = jest.fn().mockResolvedValue({ process_id: mockProcessId });
-const mockedGet = jest.fn().mockResolvedValue({ status: 'queued' });
+const mockProcessId = '831';
+const mockedList = jest
+  .fn<() => Promise<PaginatedResult<Language>>>()
+  .mockResolvedValue({ items: [{ lang_iso: 'es' }] } as PaginatedResult<Language>);
+const mockedUpload = jest
+  .fn<() => Promise<QueuedProcess>>()
+  .mockResolvedValue({ process_id: mockProcessId } as QueuedProcess);
+const mockedGet = jest.fn<() => Promise<QueuedProcess>>().mockResolvedValue({ status: 'queued' } as QueuedProcess);
 
 jest.mock('@lokalise/node-api', () => ({
   LokaliseApi: jest.fn().mockImplementation(() => ({
-    languages: {
+    languages: () => ({
       list: mockedList,
-    },
-    files: {
+    }),
+    files: () => ({
       upload: mockedUpload,
-    },
-    queuedProcesses: {
+    }),
+    queuedProcesses: () => ({
       get: mockedGet,
-    },
+    }),
   })),
 }));
 
@@ -45,7 +54,7 @@ describe('Lokalise push client', () => {
     jest.clearAllMocks();
   });
 
-  it('pushes all languages', async () => {
+  test('pushes all languages', async () => {
     const credentials = getMockCredentials(FILE_FORMAT.PO, mockAllLanguagesDirectory);
 
     const client = new LokalisePushClient(credentials);
@@ -70,7 +79,7 @@ describe('Lokalise push client', () => {
     });
   });
 
-  it('pushes only base language', async () => {
+  test('pushes only base language', async () => {
     const credentials = getMockCredentials(FILE_FORMAT.JSON, mockEnglishLanguageDirectory);
 
     const client = new LokalisePushClient(credentials);
@@ -93,7 +102,7 @@ describe('Lokalise push client', () => {
     });
   });
 
-  it('pushes structured json', async () => {
+  test('pushes structured json', async () => {
     const credentials = getMockCredentials(FILE_FORMAT.JSON_STRUCTURED, mockEnglishLanguageDirectory);
 
     const client = new LokalisePushClient(credentials);

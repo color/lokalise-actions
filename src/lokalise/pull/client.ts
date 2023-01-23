@@ -1,19 +1,20 @@
 import * as core from '@actions/core';
+import { DownloadFileParams, LokaliseApi } from '@lokalise/node-api';
+import { createReadStream, createWriteStream } from 'fs';
+import { unlink, writeFile } from 'fs/promises';
+import got from 'got';
+import { join } from 'path';
+import { pipeline } from 'stream/promises';
+import { Parse } from 'unzipper';
+
 import {
   FILE_EXTENSION_BY_FILE_FORMAT,
   FILE_FORMAT,
   LOKALISE_LANG_ISO_PLACEHOLDER,
   PLACEHOLDER_FORMAT_BY_FILE_FORMAT,
-} from '@src/lokalise/constants';
-import { createReadStream, createWriteStream } from 'fs';
-import { unlink, writeFile } from 'fs/promises';
-import { formatJson, formatPO, formatStructuredJson } from '@src/lokalise/format-utilities';
-import { DownloadFileParams } from '@lokalise/node-api';
-import { LokaliseClient } from '@src/lokalise/base/client';
-import { Parse } from 'unzipper';
-import got from 'got';
-import { join } from 'path';
-import { pipeline } from 'stream/promises';
+} from '~src/lokalise/constants';
+import { formatJson, formatPO, formatStructuredJson } from '~src/lokalise/format-utilities';
+import { LokaliseClient } from '~src/lokalise/types';
 
 const BUNDLE_DESTINATION = './translations.zip';
 
@@ -22,7 +23,21 @@ type ExportParams = {
   downloadDirectory: string;
 };
 
-export class LokalisePullClient extends LokaliseClient {
+export class LokalisePullClient implements LokaliseClient {
+  lokaliseApi: LokaliseApi;
+  apiKey: string;
+  projectId: string;
+  format: FILE_FORMAT;
+  translationDirectory: string;
+  replaceModified: boolean;
+  applyTm: boolean;
+  cleanupMode: boolean;
+
+  constructor(args: Record<string, string | boolean>) {
+    Object.assign(this, args);
+    this.lokaliseApi = new LokaliseApi({ apiKey: args.apiKey as string });
+  }
+
   /**
    * Downloads a zip file of all translations for all languages for the given project.
    * The bundle is extracted and its files are post processed based on the file format.
@@ -35,7 +50,7 @@ export class LokalisePullClient extends LokaliseClient {
       : this.getFlatExportParams(this.translationDirectory, fileFormat);
 
     try {
-      const { bundle_url } = await this.lokaliseApi.files.download(this.projectId, downloadOptions);
+      const { bundle_url } = await this.lokaliseApi.files().download(this.projectId, downloadOptions);
       core.info(`Created download bundle, ${bundle_url}`);
 
       await this.downloadBundle(bundle_url);

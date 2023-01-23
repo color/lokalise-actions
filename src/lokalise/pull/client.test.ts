@@ -1,19 +1,21 @@
+import { describe, expect, jest, test } from '@jest/globals';
 import fs, { createReadStream } from 'fs';
 import promises from 'fs/promises';
-import { LokalisePullClient } from './client';
 import got from 'got';
+
+import { LokalisePullClient } from './client';
 
 const BUNDLE_URL = 'https://foo.url';
 const PO_READ_STREAM = createReadStream('./src/mock-messages/po.zip');
 const STRUCTURED_JSON_READ_STREAM = createReadStream('./src/mock-messages/structured-json.zip');
 const JSON_READ_STREAM = createReadStream('./src/mock-messages/json.zip');
 
-const mockedDownload = jest.fn().mockResolvedValue({ bundle_url: BUNDLE_URL });
+const mockedDownload = jest.fn<() => Promise<Record<string, string>>>().mockResolvedValue({ bundle_url: BUNDLE_URL });
 jest.mock('@lokalise/node-api', () => ({
   LokaliseApi: jest.fn().mockImplementation(() => ({
-    files: {
+    files: () => ({
       download: mockedDownload,
-    },
+    }),
   })),
 }));
 
@@ -26,14 +28,12 @@ describe('Lokalise pull client', () => {
   });
 
   // arrange: selectively mock out to avoid mocking imports that are required by other dependencies
-  const gotStreamSpy = jest.spyOn(got, 'stream').mockImplementation();
-  const writeStreamSpy = jest.spyOn(fs, 'createWriteStream')
+  const gotStreamSpy = jest.spyOn(got, 'stream').mockImplementation(() => ({} as any)); // needs got's Request type, which isn't exported
+  const writeStreamSpy = jest.spyOn(fs, 'createWriteStream');
   const writeFileSpy = jest.spyOn(promises, 'writeFile').mockImplementation(async () => Promise.resolve());
 
   test('pull po', async () => {
-    const readStreamSpy = jest
-      .spyOn(fs, 'createReadStream')
-      .mockReturnValueOnce(PO_READ_STREAM);
+    const readStreamSpy = jest.spyOn(fs, 'createReadStream').mockReturnValueOnce(PO_READ_STREAM);
 
     const credentials = {
       apiKey: 'mock-api-key',
