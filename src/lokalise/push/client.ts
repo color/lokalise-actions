@@ -23,7 +23,7 @@ export class LokalisePushClient implements LokaliseClient {
 
   constructor(args: Record<string, string | boolean>) {
     Object.assign(this, args);
-    this.lokaliseApi = new LokaliseApi({ apiKey: this.apiKey as string });
+    this.lokaliseApi = new LokaliseApi({ apiKey: this.apiKey });
   }
 
   /**

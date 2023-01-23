@@ -28,7 +28,7 @@ describe('Lokalise pull client', () => {
   });
 
   // arrange: selectively mock out to avoid mocking imports that are required by other dependencies
-  const gotStreamSpy = jest.spyOn(got, 'stream').mockImplementation(() => ({} as any)); // needs got's Request type, which isn't exported
+  const gotStreamSpy = jest.spyOn(got, 'stream').mockImplementation(() => ({} as ReturnType<typeof got.stream>));
   const writeStreamSpy = jest.spyOn(fs, 'createWriteStream');
   const writeFileSpy = jest.spyOn(promises, 'writeFile').mockImplementation(async () => Promise.resolve());
 
