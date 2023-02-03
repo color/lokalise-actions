@@ -1,5 +1,5 @@
 import { LokaliseApi } from '@lokalise/node-api';
-import { FILE_FORMAT } from './constants';
+import { FileFormat } from './constants';
 
 /**
  * Base wrapper around the Lokalise Node API.
@@ -9,7 +9,7 @@ export interface LokaliseClient {
   lokaliseApi: LokaliseApi;
   apiKey: string;
   projectId: string;
-  format: FILE_FORMAT;
+  format: FileFormat;
   translationDirectory: string;
   replaceModified: boolean;
   applyTm: boolean;

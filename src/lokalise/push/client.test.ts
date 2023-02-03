@@ -2,7 +2,7 @@ import { QueuedProcess, PaginatedResult, Language } from '@lokalise/node-api';
 import { describe, expect, jest, test } from '@jest/globals';
 import { readFile } from 'fs/promises';
 
-import { FILE_FORMAT } from '../constants';
+import { FileFormat } from '../constants';
 import { LokalisePushClient } from './client';
 
 jest.mock('fs/promises', () => ({
@@ -55,7 +55,7 @@ describe('Lokalise push client', () => {
   });
 
   test('pushes all languages', async () => {
-    const credentials = getMockCredentials(FILE_FORMAT.PO, mockAllLanguagesDirectory);
+    const credentials = getMockCredentials(FileFormat.PO, mockAllLanguagesDirectory);
 
     const client = new LokalisePushClient(credentials);
     await client.push();
@@ -80,7 +80,7 @@ describe('Lokalise push client', () => {
   });
 
   test('pushes only base language', async () => {
-    const credentials = getMockCredentials(FILE_FORMAT.JSON, mockEnglishLanguageDirectory);
+    const credentials = getMockCredentials(FileFormat.JSON, mockEnglishLanguageDirectory);
 
     const client = new LokalisePushClient(credentials);
     await client.push();
@@ -103,7 +103,7 @@ describe('Lokalise push client', () => {
   });
 
   test('pushes structured json', async () => {
-    const credentials = getMockCredentials(FILE_FORMAT.JSON_STRUCTURED, mockEnglishLanguageDirectory);
+    const credentials = getMockCredentials(FileFormat.JSON_STRUCTURED, mockEnglishLanguageDirectory);
 
     const client = new LokalisePushClient(credentials);
     await client.push();
