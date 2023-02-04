@@ -6,7 +6,6 @@ import got from 'got';
 import { LokalisePullClient } from './client';
 
 const BUNDLE_URL = 'https://foo.url';
-const PO_READ_STREAM = createReadStream('./src/mock-messages/po.zip');
 const STRUCTURED_JSON_READ_STREAM = createReadStream('./src/mock-messages/structured-json.zip');
 const JSON_READ_STREAM = createReadStream('./src/mock-messages/json.zip');
 
@@ -22,19 +21,21 @@ jest.mock('@lokalise/node-api', () => ({
 jest.mock('@actions/core');
 jest.mock('stream/promises');
 
+// arrange: selectively mock out to avoid mocking imports that are required by other dependencies
+jest.spyOn(got, 'stream').mockImplementation(() => ({} as ReturnType<typeof got.stream>));
+jest.spyOn(fs, 'createWriteStream');
+jest.spyOn(promises, 'writeFile').mockImplementation(async () => Promise.resolve());
+
+/**
+ * Shallow tests that make sure the data plumbing is correct.
+ * The internals are thoroughly tested in download-files.test.ts
+ */
 describe('Lokalise pull client', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  // arrange: selectively mock out to avoid mocking imports that are required by other dependencies
-  const gotStreamSpy = jest.spyOn(got, 'stream').mockImplementation(() => ({} as any)); // needs got's Request type, which isn't exported
-  const writeStreamSpy = jest.spyOn(fs, 'createWriteStream');
-  const writeFileSpy = jest.spyOn(promises, 'writeFile').mockImplementation(async () => Promise.resolve());
-
   test('pull po', async () => {
-    const readStreamSpy = jest.spyOn(fs, 'createReadStream').mockReturnValueOnce(PO_READ_STREAM);
-
     const credentials = {
       apiKey: 'mock-api-key',
       projectId: 'mock-project-key',
@@ -60,18 +61,6 @@ describe('Lokalise pull client', () => {
       placeholder_format: 'printf',
       json_unescaped_slashes: true,
     });
-
-    // bundle is downloaded
-    expect(gotStreamSpy).toHaveBeenCalledWith(BUNDLE_URL);
-    // bundle is written
-    expect(writeStreamSpy).toHaveBeenCalledWith('./translations.zip');
-    // bundle is extracted
-    expect(readStreamSpy).toHaveBeenCalledWith('./translations.zip');
-    // extracted files are parsed and written
-    expect(writeFileSpy).toHaveBeenCalledTimes(3);
-    expect(writeFileSpy).toHaveBeenNthCalledWith(1, 'po-prefix/en/django.po', expect.anything());
-    expect(writeFileSpy).toHaveBeenNthCalledWith(2, 'po-prefix/es/django.po', expect.anything());
-    expect(writeFileSpy).toHaveBeenNthCalledWith(3, 'po-prefix/zh_Hans/django.po', expect.anything());
   });
 
   test('pull structured json', async () => {
@@ -102,14 +91,6 @@ describe('Lokalise pull client', () => {
       placeholder_format: 'icu',
       json_unescaped_slashes: true,
     });
-
-    // there are three files in mock-messages/structured-json.zip
-    expect(writeFileSpy).toHaveBeenCalledTimes(3);
-    // INFO: suffix is absent from these because that set in the /mock-messages
-    // what should be tested is that the suffix is provided in the Lokalise parameters (done above)
-    expect(writeFileSpy).toHaveBeenNthCalledWith(1, 'structured-json-prefix/en.json', expect.anything());
-    expect(writeFileSpy).toHaveBeenNthCalledWith(2, 'structured-json-prefix/es.json', expect.anything());
-    expect(writeFileSpy).toHaveBeenNthCalledWith(3, 'structured-json-prefix/zh_Hans.json', expect.anything());
   });
 
   test('pull json', async () => {
@@ -135,10 +116,5 @@ describe('Lokalise pull client', () => {
       json_unescaped_slashes: true,
       replace_breaks: false,
     });
-
-    // there are two files in mock-messages/json.zip
-    expect(writeFileSpy).toHaveBeenCalledTimes(2);
-    expect(writeFileSpy).toHaveBeenNthCalledWith(1, 'flat-json-directory/es.json', expect.anything());
-    expect(writeFileSpy).toHaveBeenNthCalledWith(2, 'flat-json-directory/zh_Hans.json', expect.anything());
   });
 });

@@ -5,7 +5,7 @@ import { join } from 'path';
 
 import {
   FILE_EXTENSION_BY_FILE_FORMAT,
-  FILE_FORMAT,
+  FileFormat,
   LOKALISE_ENGLISH_LANGUAGE_CODE,
   LOKALISE_LANG_ISO_PLACEHOLDER,
 } from '~src/lokalise/constants';
@@ -15,7 +15,7 @@ export class LokalisePushClient implements LokaliseClient {
   lokaliseApi: LokaliseApi;
   apiKey: string;
   projectId: string;
-  format: FILE_FORMAT;
+  format: FileFormat;
   translationDirectory: string;
   replaceModified: boolean;
   applyTm: boolean;
@@ -23,7 +23,7 @@ export class LokalisePushClient implements LokaliseClient {
 
   constructor(args: Record<string, string | boolean>) {
     Object.assign(this, args);
-    this.lokaliseApi = new LokaliseApi({ apiKey: this.apiKey as string });
+    this.lokaliseApi = new LokaliseApi({ apiKey: this.apiKey });
   }
 
   /**
