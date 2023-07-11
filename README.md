@@ -1,5 +1,7 @@
 # lokalise-actions
 
+test
+
 ## Contributing
 
 Please consult the `.tool-verions` to make sure that you have the right
