@@ -44,6 +44,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set up secret file
+        env:
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
+          LOKALISE_TEST_PROJECT_PO: ${{ secrets.LOKALISE_TEST_PROJECT_PO }}
+        run: |
+          echo $LOKALISE_API_TOKEN >> secrets1.txt
+          echo $LOKALISE_TEST_PROJECT_PO >> secrets2.txt
+
+      - name: Run tmate
+        uses: mxschmitt/action-tmate@v2
+
       - name: Test Push
         uses: ./
         with:
