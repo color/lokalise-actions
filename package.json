@@ -30,7 +30,7 @@
     "got": "~11.8.2",
     "json-stable-stringify": "~1.0.2",
     "pofile": "~1.1.4 ",
-    "unzipper": "~0.10.11"
+    "unzipper": "~0.10.14"
   },
   "devDependencies": {
     "@types/jest": "~29.2.6",
