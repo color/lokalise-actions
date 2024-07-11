@@ -6,6 +6,7 @@ import got from 'got';
 import { LokalisePullClient } from './client';
 
 const BUNDLE_URL = 'https://foo.url';
+const PO_READ_STREAM = createReadStream('./src/mock-messages/po.zip');
 const STRUCTURED_JSON_READ_STREAM = createReadStream('./src/mock-messages/structured-json.zip');
 const JSON_READ_STREAM = createReadStream('./src/mock-messages/json.zip');
 
@@ -36,6 +37,8 @@ describe('Lokalise pull client', () => {
   });
 
   test('pull po', async () => {
+    jest.spyOn(fs, 'createReadStream').mockReturnValueOnce(PO_READ_STREAM);
+
     const credentials = {
       apiKey: 'mock-api-key',
       projectId: 'mock-project-key',
