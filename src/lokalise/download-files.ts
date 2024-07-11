@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 
 import { DownloadFileParams, LokaliseApi } from '@lokalise/node-api';
-import { createReadStream, createWriteStream } from 'fs';
+import { createReadStream, createWriteStream, existsSync } from 'fs';
 import { unlink, writeFile } from 'fs/promises';
 import got from 'got';
 import { join } from 'path';
@@ -137,7 +137,9 @@ async function extractBundleToDownloadDirectory(
     }
   }
 
-  await unlink(bundleDestination);
+  if (existsSync(bundleDestination)) {
+    await unlink(bundleDestination);
+  }
 }
 
 /**
