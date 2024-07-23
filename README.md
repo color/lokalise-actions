@@ -8,6 +8,8 @@ versions of nodejs installed in order to create a deterministic `ncc` artifact.
 Our CI process will re-generate the `./dist` folder if necessary and will do so
 with the version of nodejs defined in `.tool-versions`.
 
+test
+
 ## Usages
 
 ```yaml
