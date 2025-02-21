@@ -1,3 +1,8 @@
+# DEPRECATED
+This repository contains code for deprecated, unused GitHub actions that were originally written by Color to sync with Lokalise. We have since [switched](https://github.com/color/color/pull/86958) to [new actions provided by Lokalise](https://developers.lokalise.com/docs/github-actions). See the [wiki doc](https://getcolor.atlassian.net/wiki/spaces/SWEng/pages/1665990792/Lokalise+Translation+Management+System+TMS+Integration) for full details on Color's TMS. This repository is kept for historical reference only.
+
+---
+
 # lokalise-actions
 
 ## Contributing
